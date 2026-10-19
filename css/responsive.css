@@ -1,0 +1,114 @@
+/* ============================================================
+   VIWANDA AUTOMOTIVE - Responsive
+   Loads LAST so it wins. Small-screen, touch and notch corrections
+   only - never new components. Sections change shape, not scale.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .logowall { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .ba { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .cta__h { font-size: var(--step-4); }
+  .logowall { grid-template-columns: repeat(3, 1fr); gap: var(--sp-4) var(--sp-3); }
+  .logowall__i img { max-height: 2.5rem; }
+}
+
+@media (max-width: 560px) {
+  .sec__h { font-size: var(--step-3); }
+  .cta__h { font-size: var(--step-3); }
+  .btn { width: 100%; }
+  .cluster { gap: var(--sp-3); }
+  .svc__body { padding: var(--sp-4); }
+
+  /* the price row stacks rather than squeezing the figure */
+  .price { flex-direction: column; align-items: flex-start; gap: var(--sp-2); padding: var(--sp-4); }
+  .price__v { font-size: var(--step-1); }
+  .price__note { padding: var(--sp-4); }
+
+  .logowall { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* pointer-tracked effects are meaningless on touch and cost frames */
+@media (hover: none) {
+  .svc:hover { transform: none; }
+  .svc:hover .svc__ph img { transform: none; }
+  .logowall__i img { opacity: .78; }
+}
+
+@media (max-width: 860px) {
+  .band__in { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .band--flip .band__copy { order: 0; }
+  .band__media { grid-template-columns: 1fr 1fr; }
+  .pagehead__h { font-size: var(--step-5); }
+}
+
+@media (max-width: 560px) {
+  .pagehead__h { font-size: var(--step-4); }
+  .band__h { font-size: var(--step-3); }
+  .gal { grid-template-columns: 1fr; }
+  .filt { font-size: var(--step--2); padding: 0.5em 0.8em; }
+}
+
+@media (max-width: 560px) {
+  .qf__row { grid-template-columns: 1fr; }
+  .qf__dl > div { grid-template-columns: 1fr; gap: 2px; }
+  .qf__nav { flex-direction: column-reverse; }
+}
+
+@media (max-width: 760px) {
+  .locs { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .step { grid-template-columns: 2.6rem 1fr; gap: var(--sp-3); padding: var(--sp-4); }
+  .loc { padding: var(--sp-5); }
+  .loc__dl { grid-template-columns: 1fr; gap: 2px; }
+  .loc__dl dt { margin-top: var(--sp-2); }
+  .crow { padding: var(--sp-4); }
+}
+
+@media (max-width: 1100px) { .gallery--tight { column-count: 4; } }
+@media (max-width: 900px)  { .gallery { column-count: 3; } .gallery--tight { column-count: 3; } }
+@media (max-width: 640px)  { .gallery, .gallery--tight { column-count: 2; } }
+@media (max-width: 400px)  { .gallery, .gallery--tight { column-count: 1; } }
+
+@media (max-width: 560px) {
+}
+
+@media (max-width: 860px) {
+  .proj__in { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .proj--flip .proj__copy { order: 0; }
+}
+@media (max-width: 560px) {
+  .proj__h { font-size: var(--step-3); }
+  .ba { aspect-ratio: 3 / 2; }
+  .ba__handle i { width: 32px; height: 32px; }
+}
+
+@media (max-width: 860px) {
+  .road__in { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .ba--wide { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 560px) {
+  .promise__row--mid { padding-left: var(--sp-5); }
+  .promise__row::after { height: 2px; }
+  .flow__i { padding: var(--sp-5) var(--sp-4) var(--sp-4); }
+}
+
+@media (max-width: 640px) {
+  .hero__meta { grid-template-columns: 1fr; gap: var(--sp-4); }
+}
+
+@media (max-width: 900px) {
+  /* the pin needs both columns on screen; below this it reads better unpinned */
+  .story__stage { height: auto; }
+  .story__pin { position: static; height: auto; padding-block: var(--section-y); }
+  .story__in { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .story__msgs { min-height: 0; display: grid; gap: var(--sp-5); }
+  .story__msg { position: static; opacity: 1; transform: none; pointer-events: auto; }
+  .story__stack { aspect-ratio: 4 / 3; }
+  .story__shot { position: relative; opacity: 1; }
+  .story__shot:not(:first-child) { display: none; }
+  .story__dots { display: none; }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://viwandaautomotive.com/sitemap.xml
