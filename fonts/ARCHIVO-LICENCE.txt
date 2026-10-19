@@ -1,0 +1,6 @@
+Archivo (variable, wght 100-900 / wdth 62-125)
+Copyright Omnibus-Type. Licensed under the SIL Open Font License 1.1.
+https://github.com/google/fonts/tree/main/ofl/archivo
+
+Bundled because the logo wordmark is generated from it (tools/word.py) and
+the site self-hosts it as the display face. OFL permits redistribution.

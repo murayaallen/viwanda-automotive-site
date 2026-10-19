@@ -1,0 +1,153 @@
+/* ============================================================
+   VIWANDA AUTOMOTIVE - Motion
+   Keyframes and animation primitives. Loads after components.css
+   and before pages.css. Everything here is transform + opacity.
+   ============================================================ */
+
+/* ---------- split text ---------- */
+.sp { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; }
+.sp__i {
+  display: inline-block;
+  transform: translateY(104%);
+  opacity: 0;
+  transition: transform var(--dur-4) var(--ease-out), opacity var(--dur-3) var(--ease-out);
+}
+[data-split].in .sp__i { transform: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .sp__i { transform: none !important; opacity: 1 !important; transition: none !important; }
+}
+
+/* ---------- parallax / scrub hosts ---------- */
+[data-parallax] { will-change: transform; }
+[data-scrub] { --p: 0; }
+
+/* ---------- lamp strike ----------
+   Three warm pools come up left to right, 120ms apart: the bay lights
+   coming on. Fires once when the section is reached. */
+.lamps { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lamps i {
+  position: absolute;
+  top: -22%;
+  width: 46%;
+  height: 128%;
+  opacity: 0;
+  background: radial-gradient(50% 42% at 50% 30%,
+    color-mix(in srgb, var(--lamp) 34%, transparent) 0%,
+    color-mix(in srgb, var(--lamp) 14%, transparent) 38%,
+    transparent 72%);
+  transition: opacity 620ms var(--ease-out);
+}
+.lamps i:nth-child(1) { left: -8%; }
+.lamps i:nth-child(2) { left: 28%; }
+.lamps i:nth-child(3) { left: 64%; }
+[data-lamp].lit .lamps i { opacity: 1; }
+[data-lamp].lit .lamps i:nth-child(2) { transition-delay: 120ms; }
+[data-lamp].lit .lamps i:nth-child(3) { transition-delay: 240ms; }
+
+/* ---------- specular sweep ----------
+   A slow warm band crossing dark panels: light raking over metal. */
+.sweep { position: relative; overflow: hidden; }
+.sweep::after {
+  content: "";
+  position: absolute;
+  top: -30%; left: -40%;
+  width: 26%; height: 160%;
+  transform: skewX(-14deg);
+  background: linear-gradient(100deg, transparent,
+              color-mix(in srgb, var(--lamp) 16%, transparent) 46%, transparent);
+  animation: va-sweep 7.5s linear infinite;
+  pointer-events: none;
+}
+@keyframes va-sweep { to { left: 130%; } }
+
+/* ---------- marquee ---------- */
+.marquee { overflow: hidden; }
+.marquee__row { display: flex; width: max-content; will-change: transform; }
+
+/* ---------- scroll progress ---------- */
+.scroll-progress i { transform-origin: left; transform: scaleX(0); width: 100%; }
+
+/* ---------- sticky steps ---------- */
+[data-step] { opacity: .42; transition: opacity var(--dur-3) var(--ease); }
+[data-step].is-on { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep::after { animation: none; opacity: .35; }
+  .lamps i { transition: none; opacity: 1; }
+}
+
+/* ============================================================
+   SCROLL-DRIVEN ANIMATION (progressive enhancement)
+   animation-timeline: view() is baseline since 2024 (Chromium 115,
+   Safari 18, Firefox 130). Where it exists the browser runs these on
+   the compositor thread with no JavaScript at all, which is the
+   difference between smooth and stuttering on a cheap Android.
+
+   Where it does not exist, motion.js's IntersectionObserver still
+   does the work - so this block only ever adds, never breaks.
+   ============================================================ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* the JS path is no longer needed for the basic reveal */
+    html.sda [data-anim] { transition: none; }
+    html.sda [data-anim]:not(.in) {
+      animation: sda-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+    @keyframes sda-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* gallery frames settle as they come up */
+    html.sda .gi {
+      animation: sda-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 2% cover 22%;
+    }
+    @keyframes sda-settle {
+      from { opacity: 0; transform: translateY(26px) scale(.985); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* photographs drift inside their frame: depth without a parallax hack */
+    .gi img, .band__solo img, .svc__ph img {
+      animation: sda-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes sda-drift {
+      from { transform: scale(1.06) translateY(-1.2%); }
+      to   { transform: scale(1.06) translateY(1.2%); }
+    }
+
+    /* section rules draw themselves in */
+    .eyebrow::after {
+      transform-origin: left;
+      animation: sda-rule linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 20%;
+    }
+    @keyframes sda-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  }
+}
+
+/* ============================================================
+   FRAME SEQUENCE
+   Scroll-scrubbed assembly. Sized by aspect ratio so the box is
+   reserved before the first frame decodes and nothing shifts.
+   ============================================================ */
+.seq {
+  position: relative;
+  aspect-ratio: var(--seq-ratio, 16 / 9);
+  width: 100%;
+  background: var(--bg);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.seq__c { display: block; width: 100%; height: 100%; opacity: 0;
+  transition: opacity var(--dur-3) var(--ease); }
+.seq.is-ready .seq__c { opacity: 1; }
+.seq noscript img, .seq > img { display: block; width: 100%; height: auto; }

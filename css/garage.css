@@ -1,0 +1,1234 @@
+/* ============================================================
+   VIWANDA AUTOMOTIVE - garage.css
+   The home page's set pieces: the intro, the bay hero, the turning
+   wheel, under the bonnet, the job card, the rolling tread and the
+   bay light at the close. Loads after pages.css.
+
+   Everything that moves is transform or opacity. Everything that moves
+   stops under prefers-reduced-motion and the page reads complete
+   without it.
+   ============================================================ */
+
+/* ---------- on-ink: a workshop-dark band inside the white site ----------
+   The dark theme's tokens, scoped. Every component inside keeps working
+   through its tokens, so nothing needs a dark twin of its own. */
+.on-ink {
+  --bg:         #0B0A09;
+  --bg-sunk:    #121010;
+  --surface:    #1A1716;
+  --surface-2:  #241F1D;
+  --surface-3:  #322B27;
+  --text:       #F2EEEB;
+  --text-2:     var(--gr-400);
+  --text-3:     var(--gr-500);
+  --border:     #2B2522;
+  --border-2:   #3D3531;
+  --logo-ink:   brightness(0) invert(1);
+  --accent:     var(--gold-500);
+  --accent-2:   var(--gold-300);
+  --accent-fill:var(--gold-500);
+  --on-accent:  #0B0A09;
+  --signal:     var(--red-400);
+  --lamp:       var(--amb-300);
+  --steel:      var(--st-400);
+  --focus:      var(--gold-300);
+  --shadow-1:   0 1px 2px rgba(0,0,0,.44);
+  --shadow-2:   0 2px 4px rgba(0,0,0,.40), 0 10px 24px -12px rgba(0,0,0,.72);
+  --shadow-3:   0 4px 8px rgba(0,0,0,.40), 0 22px 48px -22px rgba(0,0,0,.85);
+  color-scheme: dark;
+  background-color: var(--bg);
+  color: var(--text);
+}
+.on-ink .btn--ghost { color: var(--text); border-color: var(--border-2); }
+.on-ink .btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* the hero's panel and buttons, under workshop light */
+.on-ink .qs {
+  background-image: linear-gradient(177deg, var(--surface-2) 0%, var(--surface) 100%);
+  border-color: var(--border-2);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 9%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 40%, transparent),
+    0 2px 4px color-mix(in srgb, black 40%, transparent),
+    0 28px 60px -24px color-mix(in srgb, black 85%, transparent);
+}
+.on-ink .qs::after { opacity: .13; }
+.on-ink .qs .field select,
+.on-ink .qs .field input {
+  background-color: color-mix(in srgb, black 22%, var(--surface));
+  box-shadow:
+    inset 0 2px 4px -1px color-mix(in srgb, black 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, white 7%, transparent);
+}
+.on-ink .hero__cta .btn--ghost {
+  background-image: linear-gradient(180deg, color-mix(in srgb, white 7%, transparent) 0%, transparent 100%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 10%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 35%, transparent),
+    0 2px 6px -2px color-mix(in srgb, black 50%, transparent);
+}
+
+/* ---------- the header over the bay ---------- */
+.site-header.is-over-ink {
+  --bg: #0B0A09; --text: #F2EEEB; --text-2: var(--gr-400); --border: #2B2522;
+  --accent: var(--gold-500); --focus: var(--gold-300);
+  color-scheme: dark;
+  background: transparent;
+  border-bottom-color: transparent;
+}
+@supports (backdrop-filter: blur(8px)) { .site-header.is-over-ink { backdrop-filter: none; } }
+.site-header.is-over-ink.is-stuck {
+  background: color-mix(in srgb, #0B0A09 78%, transparent);
+  border-bottom-color: color-mix(in srgb, white 7%, transparent);
+}
+@supports (backdrop-filter: blur(8px)) { .site-header.is-over-ink.is-stuck { backdrop-filter: blur(12px) saturate(1.1); } }
+.site-header.is-over-ink .site-nav a,
+.site-header.is-over-ink .icon-btn { color: var(--text); }
+.site-header.is-over-ink .brand__mark--light { display: none; }
+.site-header.is-over-ink .brand__mark--dark { display: block; }
+
+/* ============================================================
+   THE BAY - home hero
+   Real jobs drift behind the headline, edge to edge, tilted a
+   few degrees so the wall reads as a space and not a grid.
+   ============================================================ */
+.hero--bay {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 0;
+  margin-top: -4.25rem;
+  padding-top: calc(4.25rem + clamp(3.5rem, 11vh, 7.5rem));
+  padding-bottom: clamp(3.5rem, 9vh, 6.5rem);
+  min-height: min(100svh, 62rem);
+  display: flex;
+  align-items: center;
+}
+.hero--bay > .wrap { width: 100%; }
+.hero--bay::before { display: none; }
+.hero__wall {
+  position: absolute;
+  inset: -6% -4%;
+  z-index: -2;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  transform:
+    translate3d(calc(var(--mx, 0) * -16px), calc(var(--sy, 0px) + var(--my, 0) * -12px), 0)
+    rotate(-4deg) scale(1.08);
+  will-change: transform;
+}
+.wall-row { min-height: 0; }
+.wall-track {
+  display: flex;
+  gap: 10px;
+  height: 100%;
+  width: max-content;
+  padding-right: 10px;
+  animation: wallDrift var(--d, 70s) linear infinite;
+  will-change: transform;
+}
+.wall-row--rev .wall-track { animation-direction: reverse; }
+.wall-track img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  background: #1A1716;
+  filter: grayscale(.35) brightness(.6) contrast(1.06);
+}
+@keyframes wallDrift { to { transform: translate3d(-50%, 0, 0); } }
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(11,10,9,.95) 0%, rgba(11,10,9,.88) 34%, rgba(11,10,9,.58) 64%, rgba(11,10,9,.74) 100%),
+    linear-gradient(180deg, rgba(11,10,9,.72) 0%, transparent 26%, transparent 70%, rgba(11,10,9,.96) 100%);
+}
+/* the gold light that the intro's strip light leaves behind */
+.hero__lamp {
+  position: absolute;
+  z-index: -1;
+  left: 50%; top: 0;
+  width: min(1400px, 140vw); height: 70%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: radial-gradient(ellipse 40% 56% at 50% 0%, rgba(255,226,170,.10), transparent 72%);
+}
+@media (max-width: 1079px) {
+  .hero__veil {
+    background:
+      linear-gradient(180deg, rgba(11,10,9,.8) 0%, rgba(11,10,9,.86) 40%, rgba(11,10,9,.92) 100%);
+  }
+}
+
+/* ============================================================
+   RESTORE / MAINTAIN / ENHANCE - the wheel turns as you pass
+   ============================================================ */
+.promise--wheel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 0;
+  padding-block: clamp(6rem, 16vw, 12rem);
+}
+.promise__bg { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.promise__bg picture { position: absolute; inset: -14%; display: block; }
+.promise__bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 52% 62%;
+  transform-origin: 50% 64%;
+  transform: rotate(calc(var(--p, .5) * 24deg - 12deg)) scale(calc(1.14 - var(--p, .5) * .08));
+  filter: saturate(.92) contrast(1.06) brightness(.82);
+  will-change: transform;
+}
+.promise--wheel::before {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(11,10,9,.94) 0%, rgba(11,10,9,.8) 40%, rgba(11,10,9,.3) 74%, rgba(11,10,9,.12) 100%),
+    linear-gradient(180deg, rgba(11,10,9,.7) 0%, transparent 24%, transparent 76%, rgba(11,10,9,.8) 100%);
+}
+.promise--wheel .promise__row { color: var(--text); }
+.promise--wheel .promise__row--mid { color: var(--accent); }
+.promise--wheel .promise__row span {
+  display: inline-block;
+  transform: translate3d(calc((1 - var(--p, 1)) * var(--dir, -1) * 9vw), 0, 0);
+  will-change: transform;
+}
+.promise--wheel .promise__row:nth-child(2) span { --dir: 1; }
+.promise--wheel .promise__sub { color: var(--text-2); }
+.promise__tool {
+  display: block;
+  margin-top: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+@media (max-width: 760px) {
+  .promise--wheel::before {
+    background: linear-gradient(180deg, rgba(11,10,9,.86), rgba(11,10,9,.72) 50%, rgba(11,10,9,.9));
+  }
+}
+
+/* ============================================================
+   UNDER THE BONNET
+   Desktop: the stage pins while the camera pulls back from the crank
+   to the whole engine, then the points to check light up.
+   Phone: no pin; the same pull-back runs as the frame scrolls through.
+   ============================================================ */
+.engine { position: relative; }
+.engine__track { position: relative; }
+.engine__stage {
+  position: relative;
+  display: grid;
+  gap: var(--sp-6);
+  padding-block: var(--section-y);
+}
+.engine__copy { min-width: 0; }
+.engine__copy .lede { margin-top: var(--sp-4); }
+.engine__frame {
+  position: relative;
+  aspect-ratio: 1600 / 1680;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: #121010;
+}
+.engine__zoom {
+  position: absolute; inset: 0;
+  transform-origin: 49% 84%;
+  transform: scale(calc(1 + (1 - var(--z, 1)) * .95));
+  will-change: transform;
+}
+.engine__spots { position: absolute; inset: 0; }
+.engine__zoom img { width: 100%; height: 100%; object-fit: cover; display: block; filter: contrast(1.04) saturate(1.02); }
+.engine__frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 70% at 50% 55%, transparent 55%, rgba(11,10,9,.55) 100%);
+}
+.engine__list {
+  list-style: none; margin: var(--sp-6) 0 0; padding: 0;
+  display: grid; gap: 2px;
+  counter-reset: chk;
+}
+.engine__list button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: baseline;
+  text-align: left;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) 0;
+  background: none;
+  border: 0;
+  border-top: var(--hairline) solid var(--border);
+  color: var(--text-2);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease);
+}
+.engine__list li:last-child button { border-bottom: var(--hairline) solid var(--border); }
+.engine__list .n { font-family: var(--font-mono); font-size: var(--step--2); color: var(--text-3); letter-spacing: var(--tr-mono); }
+.engine__list .t { font-size: var(--step-0); color: var(--text); font-weight: 500; }
+.engine__list .d {
+  grid-column: 2;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--text-2);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height var(--dur-4) var(--ease), opacity var(--dur-3) var(--ease);
+}
+.engine__list button[aria-expanded="true"] .n { color: var(--accent); }
+.engine__list button[aria-expanded="true"] .d { max-height: 9rem; opacity: 1; }
+.engine__list button:hover .t { color: var(--accent); }
+.engine__list button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.spot {
+  position: absolute;
+  left: var(--x); top: var(--y);
+  width: 2.25rem; height: 2.25rem;
+  margin: -1.125rem 0 0 -1.125rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-fill);
+  background: color-mix(in srgb, #0B0A09 62%, transparent);
+  color: var(--text);
+  display: grid; place-items: center;
+  font: 500 var(--step--2)/1 var(--font-mono);
+  cursor: pointer;
+  opacity: var(--show, 0);
+  transform: scale(calc(.6 + var(--show, 0) * .4));
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.spot::before {
+  content: ""; position: absolute; inset: -7px; border-radius: 50%;
+  border: 1px solid var(--accent-fill);
+  animation: spotPulse 2.6s var(--ease-out) infinite;
+}
+@keyframes spotPulse { from { opacity: .8; transform: scale(.8); } to { opacity: 0; transform: scale(1.6); } }
+.spot[aria-expanded="true"] { background: var(--accent-fill); color: var(--on-accent); }
+.spot:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.engine__tip {
+  position: absolute;
+  z-index: 3;
+  width: min(17rem, 70%);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, #0B0A09 86%, transparent);
+  border: var(--hairline) solid var(--border-2);
+  box-shadow: var(--shadow-3);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-3) var(--ease-out);
+}
+.engine__tip.is-on { opacity: 1; transform: none; }
+.engine__tip b { display: block; font-weight: 500; color: var(--accent); font-size: var(--step--1); }
+.engine__tip span { display: block; margin-top: 4px; font-size: var(--step--1); line-height: 1.5; color: var(--text-2); }
+
+@media (min-width: 900px) {
+  .engine__track { height: 250vh; }
+  .engine__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding-block: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+  .engine__frame {
+    height: min(84svh, 44vw * 1.05);
+    width: auto;
+    border-radius: var(--r-lg);
+  }
+  .engine__copy { max-width: 34rem; }
+  .engine .sec__h { font-size: var(--step-4); }
+  .engine__list { margin-top: var(--sp-5); }
+  .engine__list button { padding-block: .6rem; }
+}
+
+/* ============================================================
+   THE JOB CARD - the process fills in as you read down it
+   ============================================================ */
+.flow__rail {
+  position: relative;
+  height: 2px;
+  margin-bottom: var(--sp-5);
+  background: var(--border-2);
+  overflow: hidden;
+}
+.flow__rail i {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--accent-fill), var(--gold-300));
+  transform-origin: left;
+  transform: scaleX(var(--fill, 0));
+}
+.js-anim [data-jobcard] .flow__i { transition: border-color var(--dur-3) var(--ease), box-shadow var(--dur-3) var(--ease), transform var(--dur-4) var(--ease-out); }
+.js-anim [data-jobcard] .flow__i::before { opacity: .25; transition: opacity var(--dur-3) var(--ease); }
+.js-anim [data-jobcard] .flow__i.is-on { border-color: color-mix(in srgb, var(--accent-fill) 55%, var(--border)); box-shadow: var(--shadow-2); }
+.js-anim [data-jobcard] .flow__i.is-on::before { opacity: 1; }
+.flow__stamp {
+  position: absolute; top: var(--sp-4); right: var(--sp-4);
+  font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tr-label);
+  text-transform: uppercase; color: var(--accent);
+  border: 1px solid currentColor; border-radius: var(--r-sm);
+  padding: 2px 6px;
+  opacity: 0; transform: rotate(-8deg) scale(1.3);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-3) var(--ease-spring);
+}
+.flow__i.is-done .flow__stamp { opacity: .9; transform: rotate(-8deg) scale(1); }
+@media (max-width: 760px) { .flow__rail { display: none; } }
+
+/* ============================================================
+   THE ROAD - tread rolls under the copy, faster when you scroll
+   ============================================================ */
+.road--tread {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 0;
+}
+.road__tread { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.road__tread i {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: calc(100% + var(--tw, 2400px));
+  filter: brightness(.42) contrast(1.12) grayscale(.2);
+  will-change: transform;
+}
+/* the texture is only fetched once the band is close, so it never weighs on first load */
+.road__tread.is-near i { background: url("/viwanda-automotive-site/images/garage/tread-tile.webp") repeat-x 0 50% / var(--tw, 2400px) 100%; }
+/* Spann's running tread, behind Restore / Maintain / Enhance */
+.road__tread--stomp.is-near i {
+  background: url("/viwanda-automotive-site/images/garage/spann/tread-stomp-900.webp") repeat-x 0 50% / var(--tw, 760px) auto;
+  filter: brightness(.44) contrast(1.08) grayscale(.2);
+}
+.road__veil {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(11,10,9,.95) 0%, rgba(11,10,9,.86) 46%, rgba(11,10,9,.35) 80%, rgba(11,10,9,.5) 100%),
+    linear-gradient(180deg, rgba(11,10,9,.6), transparent 22%, transparent 78%, rgba(11,10,9,.7));
+}
+.road--tread .road__in { grid-template-columns: minmax(0, 1fr); }
+.road--tread .road__copy { max-width: 40rem; }
+.road--tread .road__art { display: none; }
+.road__models {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  list-style: none; margin: var(--sp-6) 0 0; padding: 0;
+}
+.road__models li {
+  font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tr-mono);
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  background: color-mix(in srgb, #0B0A09 50%, transparent);
+}
+@media (max-width: 760px) {
+  .road__veil { background: linear-gradient(180deg, rgba(11,10,9,.88), rgba(11,10,9,.8) 50%, rgba(11,10,9,.92)); }
+}
+
+/* ============================================================
+   THE CLOSE - the bay light comes on when you reach it
+   ============================================================ */
+.cta--bay {
+  padding-block: clamp(7rem, 16vw, 12rem) clamp(5rem, 12vw, 9rem);
+  border-top: 0;
+}
+.cta--bay .cta__glow { display: none; }
+.cta__tube {
+  position: absolute;
+  left: 50%; top: clamp(2.5rem, 6vw, 4.5rem);
+  width: min(62vw, 680px); height: 3px;
+  border-radius: 3px;
+  background: #FFF8E8;
+  transform: translateX(-50%) scaleX(0);
+  opacity: 0;
+  box-shadow: 0 0 6px 1px rgba(255,238,196,.95), 0 0 26px 5px rgba(255,220,150,.3);
+}
+.cta__beam {
+  position: absolute;
+  left: 50%; top: clamp(2.5rem, 6vw, 4.5rem);
+  width: min(170vw, 1900px); height: 110%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse 34% 62% at 50% 0%, rgba(255,236,196,.17), rgba(255,226,170,.05) 46%, transparent 74%);
+}
+.cta--bay.is-lit .cta__tube { animation: tubeGrow .32s ease-out both, flicker 1s linear .3s both; }
+.cta--bay.is-lit .cta__beam { animation: beamOn .6s ease-out .9s both; }
+.cta--bay .cta__in > * { position: relative; }
+.no-js .cta__tube, .no-js .cta__beam { opacity: 1; transform: translateX(-50%); }
+@keyframes tubeGrow { from { transform: translateX(-50%) scaleX(0); } to { transform: translateX(-50%) scaleX(1); } }
+@keyframes flicker { 0% { opacity: .16; } 6% { opacity: .95; } 9% { opacity: .08; } 16% { opacity: .8; } 20% { opacity: .04; } 30% { opacity: 1; } 33% { opacity: .55; } 38%, 100% { opacity: 1; } }
+@keyframes beamOn { 0% { opacity: 0; } 18% { opacity: .85; } 30% { opacity: .35; } 100% { opacity: 1; } }
+
+/* ============================================================
+   SERVICE CARDS - lift and catch the light under a pointer
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  .svc { transform-style: preserve-3d; }
+  .svc::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: radial-gradient(22rem 22rem at var(--gx, 50%) var(--gy, 0%), rgba(255,240,200,.16), transparent 60%);
+    opacity: 0; transition: opacity var(--dur-3) var(--ease);
+  }
+  .svc:hover::after { opacity: 1; }
+}
+
+/* ============================================================
+   THE INTRO - once a visit: real jobs spread across the screen and
+   keep moving while the mark lands, then the rows fly apart.
+   ============================================================ */
+.intro-cover { display: none; }
+.va-intro .intro-cover,
+.va-bay-in .intro-cover {
+  display: block;
+  position: fixed; inset: 0; z-index: 900;
+  background: #0B0A09;
+  /* if the script never runs, the page is not held hostage */
+  animation: coverFailsafe .5s ease 6s forwards;
+}
+.va-bay-in .intro-cover { animation-delay: 1.6s; }
+@keyframes coverFailsafe { to { opacity: 0; visibility: hidden; } }
+.va-intro body { overflow: hidden; }
+
+.intro {
+  position: fixed; inset: 0; z-index: 901;
+  overflow: hidden;
+  background: #0B0A09;
+  --em: clamp(112px, 21vmin, 200px);
+  cursor: pointer;
+}
+.intro__wall {
+  position: absolute; inset: 0;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 1.1vmin;
+  padding-block: 1.1vmin;
+}
+.intro__row { overflow: hidden; min-height: 0; --from: 16%; --to: -34%; }
+.intro__row.wall-row--rev { --from: -16%; --to: 34%; }
+.intro__wall .wall-track { gap: 1.1vmin; padding-right: 1.1vmin; }
+.intro__wall .wall-track img { border-radius: 3px; filter: grayscale(.3) brightness(.5) contrast(1.06); }
+.intro__veil {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(ellipse 44% 48% at 50% 50%, rgba(11,10,9,.9) 0%, rgba(11,10,9,.62) 52%, rgba(11,10,9,.12) 100%);
+}
+.intro__mark {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(var(--em) * .17);
+  pointer-events: none;
+}
+.intro__em { position: relative; width: var(--em); aspect-ratio: 1; }
+.intro__em img { width: 100%; height: 100%; display: block; }
+.intro__shine {
+  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,247,222,.9) 50%, transparent 60%) 120% 0 / 260% 100% no-repeat;
+  -webkit-mask: url("/viwanda-automotive-site/images/logo/v2/workshop-emblem-mono-white.svg") center / 100% 100% no-repeat;
+  mask: url("/viwanda-automotive-site/images/logo/v2/workshop-emblem-mono-white.svg") center / 100% 100% no-repeat;
+}
+.intro__word { width: calc(var(--em) * 2.3); max-width: calc(100vw - 48px); }
+.intro__word img, .intro__word svg { width: 100%; height: auto; display: block; overflow: visible; }
+.intro__word .vw-name { transform-box: fill-box; transform-origin: 50% 100%; }
+.intro__skip {
+  position: absolute; z-index: 8;
+  right: calc(20px + env(safe-area-inset-right, 0px)); top: calc(18px + env(safe-area-inset-top, 0px));
+  font: 500 11px/1 var(--font-body); letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); background: none; border: 0; padding: 10px; cursor: pointer;
+}
+.intro__skip:focus-visible { outline: 2px solid var(--gold-300); outline-offset: 2px; }
+
+.intro.run .intro__row { animation: introRowIn 1.3s cubic-bezier(.16,.84,.3,1) calc(var(--r) * .09s) both; }
+.intro.run .intro__em { animation: introEm .95s cubic-bezier(.2,.9,.3,1.18) .5s both; }
+.intro.run .vw-name { animation: introName .75s cubic-bezier(.2,.8,.2,1) .9s both; }
+.intro.run .vw-tag { animation: introTag .95s cubic-bezier(.45,0,.2,1) 1.15s both; }
+.intro.run .intro__word > img { animation: introName .75s cubic-bezier(.2,.8,.2,1) .9s both; }
+.intro.run .intro__shine { animation: introShine 1.25s cubic-bezier(.45,0,.3,1) 1.7s both; }
+@keyframes introRowIn { from { opacity: 0; transform: translateX(var(--from)); } to { opacity: 1; transform: none; } }
+@keyframes introEm { from { opacity: 0; transform: scale(.78); } to { opacity: 1; transform: none; } }
+@keyframes introName { from { opacity: 0; transform: translateY(26%); } to { opacity: 1; transform: none; } }
+@keyframes introTag { from { opacity: 0; clip-path: inset(-20% 100% -20% 0); } to { opacity: 1; clip-path: inset(-20% 0 -20% 0); } }
+@keyframes introShine { 0% { opacity: 1; background-position: 120% 0; } 100% { opacity: 1; background-position: -20% 0; } }
+
+/* leaving: the rows fly apart and the page is underneath */
+.intro.out { pointer-events: none; animation: introOut .55s ease .4s both; }
+.intro.out .intro__row { animation: introRowOut .85s cubic-bezier(.7,0,.84,0) calc(var(--r) * .05s) both; }
+.intro.out .intro__mark { transition: transform .8s cubic-bezier(.5,0,.2,1), opacity .6s ease .15s; transform: scale(1.04); opacity: 0; }
+.intro.out .intro__skip { opacity: 0; }
+@keyframes introRowOut { to { opacity: 0; transform: translateX(var(--to)); } }
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+
+/* the hero copy rises as the intro hands over */
+.hero--bay .hero__copy > *, .hero--bay .qs, .hero--bay .hero__meta {
+  transition: opacity .8s ease, transform .9s cubic-bezier(.2,.8,.2,1);
+}
+.intro-hold .hero--bay .hero__copy > *,
+.intro-hold .hero--bay .qs,
+.intro-hold .hero--bay .hero__meta { opacity: 0; transform: translateY(18px); }
+.hero--bay .hero__copy > *:nth-child(2) { transition-delay: .06s; }
+.hero--bay .hero__copy > *:nth-child(3) { transition-delay: .14s; }
+.hero--bay .hero__copy > *:nth-child(4) { transition-delay: .22s; }
+.hero--bay .qs { transition-delay: .18s; }
+.hero--bay .hero__meta { transition-delay: .3s; }
+
+/* ============================================================
+   BAY LIGHT - between pages
+   Leaving: the screen goes dark and the strip light strikes.
+   Arriving: the page opens as the light floods out of it.
+   ============================================================ */
+.bay {
+  position: fixed; inset: 0; z-index: 950;
+  background: #0B0A09;
+  opacity: 0; visibility: hidden;
+  transition: opacity .22s ease, visibility 0s linear .22s;
+  --em: clamp(64px, 11vmin, 104px);
+}
+.bay.is-on, .bay.is-in { opacity: 1; visibility: visible; transition: opacity .22s ease; }
+.bay__tube {
+  position: absolute; z-index: 2;
+  left: 50%; top: calc(50% - var(--em) * 1.25);
+  width: min(52vw, 560px); height: 3px;
+  border-radius: 3px; background: #FFF8E8;
+  transform: translateX(-50%) scaleX(0); opacity: 0;
+  box-shadow: 0 0 6px 1px rgba(255,238,196,.95), 0 0 26px 5px rgba(255,220,150,.32);
+}
+.bay__beam {
+  position: absolute; z-index: 1;
+  left: 50%; top: calc(50% - var(--em) * 1.25);
+  width: min(170vw, 1900px); height: 120vh;
+  transform: translateX(-50%); opacity: 0; pointer-events: none;
+  background: radial-gradient(ellipse 33% 60% at 50% 0%, rgba(255,236,196,.22), rgba(255,226,170,.07) 46%, transparent 74%);
+}
+.bay__em {
+  position: absolute; z-index: 3;
+  left: 50%; top: 50%;
+  width: var(--em); height: var(--em);
+  margin: calc(var(--em) / -2) 0 0 calc(var(--em) / -2);
+  opacity: 0;
+}
+.bay__em img { width: 100%; height: 100%; display: block; }
+.bay.is-on .bay__tube { animation: tubeGrow .2s ease-out .08s both, bayFlicker .55s linear .22s both; }
+.bay.is-on .bay__beam { animation: beamOn .35s ease-out .5s both; }
+.bay.is-on .bay__em { animation: bayLit .45s ease-out .45s both; }
+@keyframes bayFlicker { 0% { opacity: .16; } 10% { opacity: .95; } 18% { opacity: .08; } 30% { opacity: .85; } 38% { opacity: .1; } 55%, 100% { opacity: 1; } }
+@keyframes bayLit { from { opacity: 0; filter: brightness(.15); } to { opacity: 1; filter: none; } }
+/* arriving: already lit, then flooding out */
+.bay.is-in .bay__tube { opacity: 1; transform: translateX(-50%) scaleX(1); }
+.bay.is-in .bay__beam, .bay.is-in .bay__em { opacity: 1; }
+.bay.is-in.is-leaving { opacity: 0; visibility: hidden; transition: opacity .6s ease .12s, visibility 0s linear .72s; }
+.bay.is-in.is-leaving .bay__beam { transition: transform .7s cubic-bezier(.3,0,.2,1), opacity .7s ease; transform: translateX(-50%) scale(2.2); }
+.bay.is-in.is-leaving .bay__em { transition: opacity .3s ease, transform .6s ease; opacity: 0; transform: scale(1.08); }
+
+/* ---------- reduced motion: the page, complete and still ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .wall-track, .road__tread i, .spot::before { animation: none !important; }
+  .hero__wall { transform: rotate(-4deg) scale(1.08); }
+  .promise__bg img { transform: none; }
+  .promise--wheel .promise__row span { transform: none; }
+  .engine__zoom { transform: none; }
+  .spot { opacity: 1; transform: none; }
+  .cta__tube { opacity: 1; transform: translateX(-50%); animation: none !important; }
+  .cta__beam { opacity: 1; animation: none !important; }
+  .intro, .bay, .intro-cover { display: none !important; }
+}
+
+/* ============================================================
+   PAGE HEADS - every inner page opens in the bay, each on its own
+   backdrop: a photograph, the wall of work, the clients, the gear,
+   the strip light, the tread, or a before/after that wipes itself.
+   ============================================================ */
+.pagehead--bay {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: -4.25rem;
+  padding-top: calc(4.25rem + clamp(4.5rem, 14vh, 9rem));
+  padding-bottom: clamp(3rem, 8vh, 5.5rem);
+  min-height: min(74svh, 46rem);
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 0;
+}
+.pagehead--bay > .wrap { width: 100%; position: relative; }
+.pagehead--bay .pagehead__h {
+  font-size: var(--step-7);
+  font-weight: 450;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+.pagehead--bay .lede { color: var(--text-2); max-width: 58ch; }
+.pagehead--bay .pagehead__e { display: flex; align-items: center; gap: var(--sp-3); }
+.pagehead--bay .pagehead__e::after { content: ""; width: 2.5rem; height: 1px; background: var(--accent-fill); }
+.pagehead--bay .cluster .btn--ghost { color: var(--text); }
+
+.backdrop { position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.backdrop__veil {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(11,10,9,.94) 0%, rgba(11,10,9,.8) 42%, rgba(11,10,9,.34) 78%, rgba(11,10,9,.46) 100%),
+    linear-gradient(180deg, rgba(11,10,9,.72) 0%, transparent 30%, transparent 60%, rgba(11,10,9,.96) 100%);
+}
+@media (max-width: 760px) {
+  .backdrop__veil { background: linear-gradient(180deg, rgba(11,10,9,.76), rgba(11,10,9,.82) 45%, rgba(11,10,9,.96)); }
+}
+
+/* a photograph that breathes, and leans away from the pointer */
+.backdrop--photo picture {
+  position: absolute; inset: -8%; display: block;
+  transform: translate3d(calc(var(--mx, 0) * -14px), calc(var(--sy, 0px) + var(--my, 0) * -10px), 0);
+  will-change: transform;
+}
+.backdrop--photo img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.62) saturate(.92) contrast(1.05);
+  animation: kenburns 30s ease-in-out infinite alternate;
+}
+@keyframes kenburns { from { transform: scale(1.04); } to { transform: scale(1.16) translate3d(-2%, -1%, 0); } }
+
+/* a wheel that keeps turning: a large square so the corners never show */
+.backdrop--turn picture {
+  position: absolute; display: block;
+  width: 170vmax; height: 170vmax;
+  left: calc(72% - 85vmax); top: calc(50% - 85vmax);
+  transform: translate3d(calc(var(--mx, 0) * -10px), calc(var(--sy, 0px) + var(--my, 0) * -8px), 0);
+}
+.backdrop--turn img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 56%;
+  filter: brightness(.6) contrast(1.06);
+  animation: turn 140s linear infinite;
+}
+@keyframes turn { to { transform: rotate(360deg); } }
+
+/* the gear, turning with the page */
+.backdrop--gear .gear {
+  position: absolute;
+  width: min(86vmin, 820px); aspect-ratio: 1;
+  right: max(-14vmin, -160px); top: 50%;
+  transform: translateY(-50%) rotate(var(--rot, 0deg));
+  will-change: transform;
+}
+.backdrop--gear .gear img { width: 100%; height: 100%; display: block; animation: turn 160s linear infinite; }
+.backdrop--gear .gear::after {
+  content: ""; position: absolute; inset: 25%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,226,170,.10), transparent 70%);
+}
+@media (max-width: 760px) { .backdrop--gear .gear { width: 120vw; right: -50vw; opacity: .55; } }
+
+/* the clients, drifting in rows */
+.backdrop--logos .logo-rows {
+  position: absolute; inset: -12% -6%;
+  display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); align-items: center;
+  transform: rotate(-4deg);
+}
+.logo-track {
+  display: flex; align-items: center; gap: 7vw;
+  width: max-content; padding-right: 7vw;
+  animation: wallDrift var(--d, 60s) linear infinite;
+}
+.wall-row--rev .logo-track { animation-direction: reverse; }
+.logo-track img { height: clamp(34px, 7vh, 70px); width: auto; max-width: none; opacity: .34; filter: var(--logo-ink); }
+
+/* the strip light: struck on arrival (book) or failing (404) */
+.bd-tube {
+  position: absolute; left: 50%; top: clamp(5.75rem, 17vh, 9.5rem);
+  width: min(70vw, 760px); height: 3px; border-radius: 3px;
+  background: #FFF8E8; transform: translateX(-50%);
+  box-shadow: 0 0 6px 1px rgba(255,238,196,.95), 0 0 26px 5px rgba(255,220,150,.32);
+}
+.bd-beam {
+  position: absolute; left: 50%; top: clamp(5.75rem, 17vh, 9.5rem);
+  width: min(170vw, 1900px); height: 120%; transform: translateX(-50%);
+  background: radial-gradient(ellipse 34% 62% at 50% 0%, rgba(255,236,196,.2), rgba(255,226,170,.06) 46%, transparent 74%);
+}
+.backdrop--bay .bd-tube { animation: tubeGrow .32s ease-out .2s both, flicker 1.05s linear .5s both; }
+.backdrop--bay .bd-beam { animation: beamOn .6s ease-out 1.15s both; }
+.backdrop--flicker .bd-tube { animation: tubeGrow .32s ease-out .2s both, dying 6s linear .6s infinite; }
+.backdrop--flicker .bd-beam { animation: dying 6s linear .6s infinite; }
+@keyframes dying {
+  0%, 50%, 66%, 100% { opacity: 1; }
+  51% { opacity: .12; } 53% { opacity: .9; } 55% { opacity: .04; }
+  58% { opacity: .8; } 60% { opacity: .2; } 62% { opacity: 1; }
+}
+
+/* before and after, wiping itself */
+.bd-ba { position: absolute; inset: -3%; }
+.bd-ba img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.55) saturate(.9) contrast(1.04);
+}
+.bd-ba img + img { animation: baWipe 9s ease-in-out infinite alternate; }
+.bd-ba i {
+  position: absolute; inset: 0;
+  border-left: 2px solid var(--gold-500);
+  box-shadow: -10px 0 24px -12px rgba(219,168,80,.9);
+  animation: baLine 9s ease-in-out infinite alternate;
+}
+@keyframes baWipe { from { clip-path: inset(0 0 0 24%); } to { clip-path: inset(0 0 0 76%); } }
+@keyframes baLine { from { transform: translateX(24%); } to { transform: translateX(76%); } }
+
+/* jump straight to a service */
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--sp-6) 0 0; padding: 0; list-style: none; }
+.jump a {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--border-2); border-radius: var(--r-pill);
+  font-size: var(--step--1); color: var(--text);
+  background: color-mix(in srgb, #0B0A09 55%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.jump a:hover { border-color: var(--accent); color: var(--accent); }
+.jump .mono { color: var(--text-3); font-size: var(--step--2); }
+
+/* ---------- services: each photograph opens as it arrives ---------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .band__media picture, .band__solo picture {
+      animation: bandReveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 38%;
+    }
+    .band__media img, .band__solo img {
+      animation: bandZoom linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    @keyframes bandReveal { from { clip-path: inset(9% 12% 9% 12% round 6px); } to { clip-path: inset(0 0 0 0 round 3px); } }
+    @keyframes bandZoom { from { transform: scale(1.14); } to { transform: scale(1); } }
+  }
+}
+
+/* ---------- fleet: the four steps fill like a job card ---------- */
+.steps[data-jobcard] { position: relative; }
+.steps[data-jobcard]::before {
+  content: ""; position: absolute; z-index: 1; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(var(--accent-fill), var(--gold-300));
+  transform-origin: top; transform: scaleY(var(--fill, 0));
+}
+.steps[data-jobcard] .step { position: relative; transition: background var(--dur-3) var(--ease); }
+.steps[data-jobcard] .step.is-on { background: color-mix(in srgb, var(--accent-fill) 6%, var(--surface)); }
+
+/* ============================================================
+   LIGHTBOX - every job photograph opens full screen
+   ============================================================ */
+.gi { cursor: zoom-in; }
+.gi:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.lb {
+  position: fixed; inset: 0; z-index: 800;
+  display: grid; place-items: center;
+  background: rgba(8,7,6,.94);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s ease, visibility 0s linear .3s;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.lb.is-open { opacity: 1; visibility: visible; transition: opacity .3s ease; }
+.lb__fig { margin: 0; display: grid; gap: 14px; justify-items: center; max-width: min(92vw, 1200px); }
+.lb__img {
+  display: block;
+  max-width: min(92vw, 1200px); max-height: calc(100svh - 170px);
+  min-height: min(64svh, 620px);
+  width: auto; height: auto;
+  border-radius: 3px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  transform-origin: 50% 50%;
+  transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .25s ease;
+  touch-action: pan-y;
+  user-select: none; -webkit-user-drag: none;
+}
+.lb__cap {
+  display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: center;
+  color: #CFC7C1; font-size: var(--step--1); text-align: center; max-width: 60ch; padding-inline: 16px;
+}
+.lb__stage { color: var(--gold-500); }
+.lb__n { color: #8F857E; font-size: var(--step--2); font-family: var(--font-mono); }
+.lb__btn {
+  position: absolute; display: grid; place-items: center;
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.18); background: rgba(20,18,16,.6); color: #F2EEEB;
+  cursor: pointer; transition: border-color var(--dur-2) var(--ease);
+}
+.lb__btn:hover { border-color: var(--gold-500); }
+.lb__btn:focus-visible { outline: 2px solid var(--gold-300); outline-offset: 2px; }
+.lb__x { top: calc(16px + env(safe-area-inset-top, 0px)); right: calc(16px + env(safe-area-inset-right, 0px)); }
+.lb__prev { left: calc(16px + env(safe-area-inset-left, 0px)); top: 50%; margin-top: -24px; }
+.lb__next { right: calc(16px + env(safe-area-inset-right, 0px)); top: 50%; margin-top: -24px; }
+.lb__prev svg { transform: rotate(180deg); }
+@media (max-width: 640px) {
+  .lb__prev, .lb__next { top: auto; margin-top: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .lb__prev { left: calc(50% - 60px); } .lb__next { right: calc(50% - 60px); }
+  .lb__img { max-height: calc(100svh - 220px); }
+}
+.lb-open { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop--photo img, .backdrop--turn img, .backdrop--gear .gear img,
+  .logo-track, .bd-tube, .bd-beam, .bd-ba img + img, .bd-ba i { animation: none !important; }
+  .bd-ba img + img { clip-path: inset(0 0 0 50%); }
+  .bd-ba i { transform: translateX(50%); }
+  .lb__img { transition: none; }
+}
+
+/* ============================================================
+   INTERLUDES - a tyre wall between sections, with the trade's own
+   words sliding across it in opposite directions as you scroll
+   ============================================================ */
+.interlude {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: clamp(20rem, 64vh, 38rem);
+  display: grid;
+  align-content: center;
+  gap: clamp(.25rem, 1vw, .75rem);
+}
+.interlude__bg { position: absolute; inset: -16% 0; z-index: -2; }
+.interlude__bg picture { display: block; width: 100%; height: 100%; }
+.interlude__bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: translate3d(0, var(--py, 0px), 0) scale(1.05);
+  filter: brightness(.48) contrast(1.12) saturate(.9);
+  will-change: transform;
+}
+.interlude::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(11,10,9,.6) 100%),
+    linear-gradient(180deg, rgba(11,10,9,.55), transparent 22%, transparent 78%, rgba(11,10,9,.55));
+}
+.interlude[data-interlude="tread-wall"] .interlude__bg img { filter: brightness(.78) contrast(1.15) saturate(.9); }
+.interlude--warm .interlude__bg img { filter: brightness(.52) contrast(1.08) saturate(.85) sepia(.18); }
+.interlude__row {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(3.25rem, 12vw, 10.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transform: translate3d(var(--wx, 0px), 0, 0);
+  will-change: transform;
+}
+.interlude__row span { padding-right: .32em; }
+.interlude__row .o { color: transparent; -webkit-text-stroke: 1.25px rgba(242,238,235,.62); }
+.interlude__row .g { color: var(--gold-500); }
+.interlude__row .w { color: #F2EEEB; }
+.interlude__row .dot { color: var(--gold-500); padding-right: .32em; }
+
+/* ============================================================
+   THE ROLLING WHEEL - a real wheel driven by your scroll: it turns
+   by exactly the distance it travels and leaves its track behind
+   ============================================================ */
+.roll {
+  position: relative;
+  height: clamp(84px, 11vw, 140px);
+  overflow: hidden;
+  background: var(--bg);
+}
+.roll::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px;
+  background: var(--border-2);
+}
+.roll__track {
+  position: absolute; left: 0; bottom: 0; height: 7px;
+  width: var(--tx, 0px);
+  /* a tread track, drawn rather than loaded */
+  background:
+    repeating-linear-gradient(90deg, var(--text-3) 0 3px, transparent 3px 9px) 0 0 / 100% 3px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 4px, var(--text-3) 4px 7px, transparent 7px 9px) 0 4px / 100% 3px no-repeat;
+  opacity: .32;
+}
+.roll__wheel {
+  position: absolute; left: 0; bottom: 4px;
+  height: calc(100% - 10px); aspect-ratio: 1;
+  transform: translate3d(var(--rx, -120%), 0, 0) rotate(var(--rr, 0deg));
+  will-change: transform;
+}
+.roll__wheel img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 6px 6px rgba(0,0,0,.28)); }
+.roll__shadow {
+  position: absolute; bottom: 2px; left: 0;
+  width: calc(clamp(84px, 11vw, 140px) * .8); height: 10px;
+  transform: translate3d(calc(var(--rx, -120%) + 10%), 0, 0);
+  background: radial-gradient(closest-side, rgba(0,0,0,.28), transparent);
+}
+
+/* ============================================================
+   THE GEAR WATERMARK - shaded sections carry the gear, turning
+   slowly as the page moves, so no ground is ever flat
+   ============================================================ */
+.section--sunk { position: relative; isolation: isolate; overflow: clip; }
+.section--sunk::after {
+  content: "";
+  position: absolute; z-index: -1; pointer-events: none;
+  width: clamp(320px, 42vw, 620px); aspect-ratio: 1;
+  right: clamp(-220px, -14vw, -120px); bottom: clamp(-220px, -14vw, -120px);
+  background: url("/viwanda-automotive-site/images/logo/v2/workshop-ring-mono-ink.svg") center / contain no-repeat;
+  opacity: .045;
+  transform: rotate(var(--page-rot, 0deg));
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .section--sunk::after { filter: invert(1); opacity: .06; } }
+:root[data-theme="dark"] .section--sunk::after { filter: invert(1); opacity: .06; }
+
+@media (prefers-reduced-motion: reduce) {
+  .interlude__bg img, .interlude__row, .roll__wheel, .section--sunk::after { transform: none !important; }
+  .roll__wheel { left: 50%; margin-left: calc(clamp(84px, 11vw, 140px) / -2); }
+  .roll__track { width: 50%; }
+}
+
+/* ============================================================
+   THE TORCH - on a desktop, a warm work-lamp follows the pointer
+   across every dark band
+   ============================================================ */
+.cta--bay, .engine { isolation: isolate; }
+.torch {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(30rem 30rem at var(--tx, 50%) var(--ty, 50%), rgba(255,226,170,.09), transparent 62%);
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.torch.is-on { opacity: 1; }
+
+/* ============================================================
+   THE FOOTER - the workshop after dark, the name across the floor
+   ============================================================ */
+.site-footer.on-ink {
+  margin-top: 0;
+  border-top: 1px solid #1F1B19;
+  background: #0B0A09;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.site-footer.on-ink .foot__logo--light { display: none; }
+.site-footer.on-ink .foot__logo--dark { display: block; }
+.site-footer.on-ink::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  width: clamp(360px, 48vw, 720px); aspect-ratio: 1;
+  right: clamp(-260px, -16vw, -140px); top: clamp(-260px, -16vw, -140px);
+  background: url("/viwanda-automotive-site/images/logo/v2/workshop-ring-mono-ink.svg") center / contain no-repeat;
+  filter: invert(1);
+  opacity: .05;
+  transform: rotate(var(--page-rot, 0deg));
+}
+.foot__giant {
+  margin-top: var(--sp-7);
+  padding-inline: max(16px, 3vw);
+  padding-bottom: var(--sp-4);
+  line-height: 0;
+  opacity: .1;
+}
+.foot__giant img { width: 100%; height: auto; display: block; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .foot__giant {
+      animation: giantRise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    @keyframes giantRise { from { transform: translateY(40%); opacity: 0; } to { transform: none; opacity: .1; } }
+  }
+}
+
+/* ============================================================
+   HEADLINES THAT ARRIVE
+   ============================================================ */
+.hw { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .1em; margin-bottom: -.1em; }
+.hw > span { display: inline-block; }
+.hw-ready .hw > span { transform: translateY(108%); transition: transform .95s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 55ms); }
+.hw-ready.is-in .hw > span { transform: none; }
+
+/* ============================================================
+   SERVICES - the ghost word behind each band
+   ============================================================ */
+.band { position: relative; isolation: isolate; overflow: clip; }
+.band__ghost {
+  position: absolute; z-index: -1; pointer-events: none;
+  top: 50%; left: 50%;
+  transform: translate(calc(-50% + var(--gx, 0vw)), -50%);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(6rem, 22vw, 20rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--border-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hw-ready .hw > span { transform: none; transition: none; }
+  .band__ghost { transform: translate(-50%, -50%); }
+  .foot__giant { transform: none; }
+}
+
+/* the job, start to finish, inside the viewer */
+.lb__journey { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.lb__jh { width: 100%; text-align: center; color: #8F857E; margin: 0; }
+.lb__journey button {
+  display: grid; gap: 5px; justify-items: center;
+  padding: 4px 4px 6px; border: 1px solid rgba(255,255,255,.14); border-radius: 3px;
+  background: none; color: #CFC7C1; cursor: pointer;
+  font: 500 10px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase;
+  transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.lb__journey img { width: 84px; height: 56px; object-fit: cover; border-radius: 2px; display: block; }
+.lb__journey button[aria-pressed="true"] { border-color: var(--gold-500); color: var(--gold-500); }
+.lb__journey button:focus-visible { outline: 2px solid var(--gold-300); outline-offset: 2px; }
+
+/* ============================================================
+   THE QUOTE - a job card fills in beside the form as you answer
+   ============================================================ */
+.book__grid { display: grid; gap: clamp(2rem, 5vw, 4.5rem); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1000px) {
+  .book__grid { grid-template-columns: minmax(0, 1fr) minmax(19rem, 24rem); }
+  .jc { position: sticky; top: 6.5rem; }
+}
+.jc {
+  --paper: #FBF7EE; --rule: #E6DCC6; --ink: #2B241D; --faint: #9A8E80;
+  position: relative;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 2.35rem, var(--rule) 2.35rem calc(2.35rem + 1px)) 0 5.6rem / 100% calc(100% - 7rem) no-repeat,
+    var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 1.25rem 1.35rem 1.4rem;
+  box-shadow: 0 1px 2px rgba(23,19,15,.08), 0 18px 40px -18px rgba(23,19,15,.35);
+  transform: rotate(-1.2deg);
+  font-family: var(--font-mono);
+}
+.jc::before {
+  /* the perforated edge it was torn from */
+  content: ""; position: absolute; left: 0; right: 0; top: -5px; height: 10px;
+  background: radial-gradient(circle at 6px 5px, var(--bg) 3px, transparent 3.5px) 0 0 / 12px 10px repeat-x;
+}
+.jc__top { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: center; padding-bottom: .85rem; border-bottom: 1.5px solid var(--ink); }
+.jc__top img { width: 44px; height: 44px; display: block; }
+.jc__co { margin: 0; font: 500 .74rem/1.2 var(--font-display); letter-spacing: .08em; text-transform: uppercase; }
+.jc__ad { margin: .15rem 0 0; font-size: .68rem; color: var(--faint); letter-spacing: .06em; }
+.jc__no { margin: 0; text-align: right; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); line-height: 1.5; }
+.jc__no span { color: #B30000; }
+.jc__dl { margin: .4rem 0 0; }
+.jc__row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: .5rem; min-height: 2.35rem; align-items: end; padding-bottom: .3rem; }
+.jc__row dt { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.jc__row dd {
+  margin: 0; font-size: .86rem; color: #1D2A55;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Neue", var(--font-body);
+  overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.jc__row.is-ink dd { animation: ink .6s ease both; }
+@keyframes ink { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+.jc__foot { margin: 1rem 0 0; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); text-align: center; }
+.jc__stamp {
+  position: absolute; right: 1.1rem; bottom: 3.5rem;
+  padding: .35rem .7rem;
+  border: 2.5px solid #B30000; border-radius: 4px;
+  color: #B30000; font: 500 .8rem/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase;
+  transform: rotate(-12deg) scale(1.25);
+  opacity: 0;
+  mix-blend-mode: multiply;
+  transition: opacity .25s ease, transform .4s var(--ease-spring);
+}
+.jc__stamp.is-on { opacity: .85; transform: rotate(-12deg) scale(1); }
+@media (max-width: 999px) { .jc { transform: none; } }
+
+/* ---------- makes: each badge opens a quote ---------- */
+.make__a { display: grid; justify-items: center; gap: inherit; color: inherit; text-decoration: none; position: relative; padding-bottom: 1.1rem; }
+.make__a .make__mark, .make__a .make__word { transition: transform var(--dur-3) var(--ease-spring); }
+.make__a:hover .make__mark, .make__a:hover .make__word,
+.make__a:focus-visible .make__mark, .make__a:focus-visible .make__word { transform: translateY(-4px) scale(1.06); }
+.make__cue {
+  position: absolute; bottom: 0; left: 50%; transform: translate(-50%, 4px);
+  font-family: var(--font-mono); font-size: var(--step--2); letter-spacing: var(--tr-label); text-transform: uppercase;
+  color: var(--accent); opacity: 0; transition: opacity var(--dur-2) var(--ease), transform var(--dur-3) var(--ease);
+}
+.make__a:hover .make__cue, .make__a:focus-visible .make__cue { opacity: 1; transform: translate(-50%, 0); }
+.make__a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+
+/* ---------- clients: their own colours under a pointer ---------- */
+.logowall__i.is-colour img { filter: none !important; opacity: 1 !important; }
+
+/* ============================================================
+   BACKGROUNDS
+   Shaded sections are the shadow board: pegboard, with each tool's
+   silhouette painted where it hangs. White sections are a job sheet's
+   engineering graph paper, fading out from the middle.
+   ============================================================ */
+.section--sunk {
+  background: var(--bg-sunk) url("/viwanda-automotive-site/images/garage/vec/shadowboard-light.svg") 0 0 / 1200px auto repeat;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .section--sunk { background-image: url("/viwanda-automotive-site/images/garage/vec/shadowboard-dark.svg"); }
+}
+:root[data-theme="dark"] .section--sunk { background-image: url("/viwanda-automotive-site/images/garage/vec/shadowboard-dark.svg"); }
+@media (max-width: 640px) { .section--sunk { background-size: 900px auto; } }
+
+.section--ruled:not(.section--sunk):not(.on-ink):not(.band) {
+  --grid-c: color-mix(in srgb, var(--text) 5.5%, transparent);
+  --grid-f: color-mix(in srgb, var(--text) 2.6%, transparent);
+  background-image:
+    radial-gradient(ellipse 70% 75% at 50% 50%, transparent 35%, var(--bg) 92%),
+    linear-gradient(var(--grid-c) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-c) 1px, transparent 1px),
+    linear-gradient(var(--grid-f) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-f) 1px, transparent 1px);
+  background-size: 100% 100%, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-position: 0 0, -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+
+/* ============================================================
+   PHONES - every tap target at least 44px, nothing wider than the
+   screen. Sizes only; the look does not change.
+   ============================================================ */
+.book__grid { overflow-x: clip; }
+@media (max-width: 760px), (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .icon-btn { width: 44px; height: 44px; }
+  .brand { min-height: 44px; }
+  .filt, .jump a { min-height: 44px; }
+  .spot { width: 2.75rem; height: 2.75rem; margin: -1.375rem 0 0 -1.375rem; }
+  .hero__tel, .qs__alt, .foot__cta, .foot__list a, .foot__loc a, .drawer__line, .loc a:not(.btn) {
+    display: inline-flex; align-items: center; min-height: 44px;
+  }
+  .faq__q { min-height: 44px; }
+  .foot__list { gap: 0; }
+  .foot__list a { min-width: 44px; }
+}
+
+/* service cards on a touch screen: the light runs down each card as it scrolls through */
+@media (hover: none), (pointer: coarse) {
+  .svc { position: relative; }
+  .svc::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: radial-gradient(20rem 9rem at var(--gx, 50%) var(--gy, 0%), rgba(219,168,80,.16), transparent 70%);
+    opacity: 0; transition: opacity .4s ease;
+  }
+  .svc.is-lit::after { opacity: 1; }
+}
+
+/* nothing loops while it is off screen: a phone's battery is not ours to spend */
+.is-off .wall-track, .is-off .logo-track, .is-off img, .is-off .bd-ba i,
+.is-off .bd-tube, .is-off .bd-beam, .is-off .spot::before { animation-play-state: paused !important; }
+
+@media (max-width: 560px) {
+  .pagehead--bay .pagehead__h { font-size: var(--step-6); }
+}

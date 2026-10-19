@@ -1,0 +1,110 @@
+[
+ {
+  "id": "fuga-stripped",
+  "alt": "Nissan Fuga stripped to bare metal before restoration",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "fuga-finished",
+  "alt": "The same Nissan Fuga finished in Prestine Black",
+  "w": 738,
+  "h": 985
+ },
+ {
+  "id": "pajero-stripped",
+  "alt": "Mitsubishi Pajero Sport stripped and prepped in the bay",
+  "w": 738,
+  "h": 340
+ },
+ {
+  "id": "pajero-finished",
+  "alt": "Mitsubishi Pajero Sport finished and being buffed",
+  "w": 738,
+  "h": 402
+ },
+ {
+  "id": "crv-damaged",
+  "alt": "Honda CR-V with rear accident damage before repair",
+  "w": 738,
+  "h": 826
+ },
+ {
+  "id": "crv-repaired",
+  "alt": "Honda CR-V after panel repair and two-tone paintwork",
+  "w": 738,
+  "h": 493
+ },
+ {
+  "id": "saloon-masked",
+  "alt": "Saloon masked and primed, ready for colour",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "respray-bay",
+  "alt": "Vehicle masked for a complete respray in the workshop",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "v8-glasscoat",
+  "alt": "Toyota Land Cruiser V8 after paint work and glass coating",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "cruiser-gold",
+  "alt": "Toyota Land Cruiser V8 finished, front view",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "cruiser-black",
+  "alt": "Black Toyota Land Cruiser V8 after a complete respray",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "valeting",
+  "alt": "Interior after a complete clean-up",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "buffing",
+  "alt": "Gloss finish after complete buffing and polishing",
+  "w": 738,
+  "h": 554
+ },
+ {
+  "id": "tint",
+  "alt": "All-around window tint fitted",
+  "w": 738,
+  "h": 1033
+ },
+ {
+  "id": "parts-boxed",
+  "alt": "Imported parts boxed and labelled for a customer",
+  "w": 738,
+  "h": 1319
+ },
+ {
+  "id": "parts-airbag",
+  "alt": "Replacement airbag module sourced for a repair",
+  "w": 738,
+  "h": 1351
+ },
+ {
+  "id": "dashboard",
+  "alt": "Dashboard repair and interior trim work",
+  "w": 738,
+  "h": 555
+ },
+ {
+  "id": "premio-silver",
+  "alt": "Toyota saloon after a complete respray",
+  "w": 738,
+  "h": 412
+ }
+]
