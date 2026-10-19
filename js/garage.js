@@ -598,6 +598,60 @@
   }
 
   /* ============================================================
+     BELTS - things that run sideways: the tyre tread and the makes
+     strip. Driven by hand, one frame loop for all of them, and only
+     while one is on screen. Scrolling pushes them all faster; scroll
+     up and they run backwards, then settle back to their own pace.
+
+     Not an endless WAAPI animation: run in reverse, one of those
+     finishes when its clock reaches zero and never moves again, which
+     is what a quick flick upwards on a phone did to the tread.
+     ============================================================ */
+  var belts = [], beltRaf = 0, beltLast = 0, rate = 1, target = 1;
+  function beltFrame(t) {
+    var dt = beltLast ? Math.min(t - beltLast, 50) : 16;
+    beltLast = t;
+    rate += (target - rate) * 0.08;
+    target += (1 - target) * 0.05;
+    var live = false;
+    for (var i = 0; i < belts.length; i++) {
+      var b = belts[i];
+      if (!b.on || !b.len) continue;
+      live = true;
+      b.slow += (b.pace - b.slow) * 0.08;
+      b.x = (b.x + b.speed * dt * rate * b.slow) % b.len;
+      if (b.x < 0) b.x += b.len;
+      b.el.style.transform = 'translate3d(' + (-b.x).toFixed(2) + 'px,0,0)';
+    }
+    beltRaf = live ? w.requestAnimationFrame(beltFrame) : 0;
+    if (!live) beltLast = 0;
+  }
+  function beltWake() { if (!beltRaf) beltRaf = w.requestAnimationFrame(beltFrame); }
+  /* el moves; host is watched for being on screen; measure() gives one loop's length */
+  function belt(el, host, speed, measure) {
+    var b = { el: el, speed: speed, x: 0, len: 0, on: false, pace: 1, slow: 1 };
+    function size() { b.len = measure() || 0; }
+    size();
+    var rt;
+    w.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(size, 200); });
+    belts.push(b);
+    if ('IntersectionObserver' in w) {
+      new IntersectionObserver(function (es) {
+        b.on = es[es.length - 1].isIntersecting;
+        if (b.on) beltWake();
+      }, { rootMargin: '80px 0px' }).observe(host);
+    } else { b.on = true; beltWake(); }
+    if (belts.length === 1) {
+      tasks.push(function (y, v) {
+        if (!v) return;
+        target = clamp(1 + Math.abs(v) * 0.35, 1, 9) * (v < 0 ? -1 : 1);
+        beltWake();
+      });
+    }
+    return b;
+  }
+
+  /* ============================================================
      THE ROAD - tread that rolls, faster while you scroll
      ============================================================ */
   function tread() {
@@ -605,7 +659,18 @@
     if (!bands.length) return;
     function near(b) {
       b.classList.add('is-near');
-      if (!reduce) treadBand(b.querySelector('i'), parseFloat(b.getAttribute('data-ratio')) || 3.2);
+      var band = b.querySelector('i');
+      /* ratio: one tile's width for each unit of band height */
+      var ratio = parseFloat(b.getAttribute('data-ratio')) || 3.2;
+      function tile() {
+        var tw = Math.round((band.offsetHeight || 600) * ratio);
+        band.style.setProperty('--tw', tw + 'px');
+        return tw;
+      }
+      if (reduce) { tile(); return; }
+      /* a phone's band is short, so its tiles are small: run it a little
+         quicker there or the movement is too slight to notice */
+      belt(band, b, finePointer ? 0.055 : 0.075, tile);
     }
     if (!('IntersectionObserver' in w)) { bands.forEach(near); return; }
     var io = new IntersectionObserver(function (es) {
@@ -613,35 +678,42 @@
     }, { rootMargin: '600px 0px' });
     bands.forEach(function (b) { io.observe(b); });
   }
-  /* ratio: one tile's width for each unit of band height */
-  function treadBand(band, ratio) {
-    if (!band.animate) return;
-    var anim = null, rate = 1, target = 1, raf = 0;
-    function build() {
-      var h = band.offsetHeight || 600;
-      var tw = Math.round(h * ratio);
-      band.style.setProperty('--tw', tw + 'px');
-      if (anim) anim.cancel();
-      anim = band.animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-' + tw + 'px,0,0)' }],
-        { duration: tw * 18, iterations: Infinity });
-      anim.playbackRate = rate;
-      band.parentNode.__anim = anim;   /* pauseOffscreen() stops it when the band leaves the screen */
-      if (band.parentNode.classList.contains('is-off')) anim.pause();
+
+  /* ============================================================
+     MAKES STRIP - the marks run across under the tread
+     ============================================================ */
+  function makesBelt() {
+    var host = d.querySelector('[data-makes-strip]');
+    var track = host && host.querySelector('.belt__track');
+    if (!track) return;
+    if (reduce) { host.classList.add('is-still'); return; }
+    var set = track.querySelector('.belt__set');
+    var b = belt(track, host, 0.045, function () { return set.offsetWidth; });
+    if (finePointer) {
+      /* slows right down under the pointer, so a mark can be clicked */
+      host.addEventListener('mouseenter', function () { b.pace = 0.2; });
+      host.addEventListener('mouseleave', function () { b.pace = 1; });
     }
-    build();
-    var rt;
-    w.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(build, 200); });
-    function settle() {
-      rate += (target - rate) * 0.08;
-      target += (1 - target) * 0.05;
-      if (anim) anim.playbackRate = rate;
-      raf = Math.abs(rate - 1) > 0.01 || Math.abs(target - 1) > 0.01 ? w.requestAnimationFrame(settle) : 0;
-    }
-    tasks.push(function (y, v) {
-      if (!v) return;
-      target = clamp(1 + Math.abs(v) * 0.35, 1, 9) * (v < 0 ? -1 : 1);
-      if (!raf) raf = w.requestAnimationFrame(settle);
+    /* a thumb on it stops it dead, at once - the belt may still be running
+       fast from the scroll, and the mark must not slide out from under the
+       finger before the tap lands. It picks up again after the finger lifts. */
+    var resume = 0;
+    host.addEventListener('touchstart', function () { clearTimeout(resume); b.pace = 0; b.slow = 0; }, { passive: true });
+    host.addEventListener('touchend', function () { resume = setTimeout(function () { b.pace = 1; }, 1200); }, { passive: true });
+    host.addEventListener('focusin', function (e) {
+      /* only the keyboard: a tap focuses the link too, and moving the belt
+         then would slide the mark out from under the finger before the click */
+      var kb = true;
+      try { kb = e.target.matches(':focus-visible'); } catch (er) {}
+      if (!kb) return;
+      b.pace = 0; b.slow = 0;   /* a focused mark stands still */
+      /* bring the focused mark into view: set the belt so it sits a little in from the left */
+      var a = e.target.closest('.belt__i');
+      if (a) b.x = Math.max(0, a.offsetLeft - 24) % (b.len || 1);
+      host.scrollLeft = 0;   /* the browser's own scroll-into-view would fight the belt */
+      beltWake();
     });
+    host.addEventListener('focusout', function () { b.pace = 1; });
   }
 
   /* ============================================================
@@ -948,20 +1020,11 @@
     });
   }
 
-  /* nothing loops while it is off screen */
+  /* nothing loops while it is off screen (the belts stop themselves) */
   function pauseOffscreen() {
     if (!('IntersectionObserver' in w)) return;
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        e.target.classList.toggle('is-off', !e.isIntersecting);
-        var a = e.target.__anim;
-        /* the tread may be running backwards (the visitor scrolled up), and a
-           reversed endless animation refuses play(); set it forwards first */
-        if (a) {
-          try { if (e.isIntersecting) a.play(); else a.pause(); }
-          catch (er) { a.playbackRate = 1; try { a.play(); } catch (er2) {} }
-        }
-      });
+      es.forEach(function (e) { e.target.classList.toggle('is-off', !e.isIntersecting); });
     }, { rootMargin: '120px 0px' });
     [].forEach.call(d.querySelectorAll('.hero--bay, .pagehead--bay, .interlude, .road__tread, .engine'), function (s) { io.observe(s); });
   }
@@ -988,6 +1051,7 @@
     engine();
     jobcard();
     tread();
+    makesBelt();
     closeLight();
     glare();
   }

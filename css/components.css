@@ -15,6 +15,9 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 
 /* ---------- icon ---------- */
 .icon { display: block; flex: none; }
+/* WhatsApp's mark keeps its own green and white bubble wherever it sits;
+   a hairline of shadow keeps the white bubble off a white button */
+.icon--wa { filter: drop-shadow(0 0 .5px rgba(11,10,9,.35)); }
 [data-icon] { display: inline-flex; line-height: 0; }
 
 .icon-btn {
