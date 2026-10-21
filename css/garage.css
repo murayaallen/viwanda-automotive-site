@@ -118,6 +118,11 @@
     rotate(-4deg) scale(1.08);
   will-change: transform;
 }
+/* on a phone the tilt reads as skewed photographs, not as a set piece: run
+   the rows level there, with only the scroll drift */
+@media (max-width: 760px) {
+  .hero__wall { transform: translate3d(0, var(--sy, 0px), 0) scale(1.04); }
+}
 .wall-row { min-height: 0; }
 .wall-track {
   display: flex;
@@ -539,15 +544,16 @@
   gap: calc(var(--em) * .17);
   pointer-events: none;
 }
-.intro__em { position: relative; width: var(--em); aspect-ratio: 1; }
-.intro__em img { width: 100%; height: 100%; display: block; }
+/* the final emblem is a touch wider than tall (526 x 477) */
+.intro__em { position: relative; width: var(--em); aspect-ratio: 526 / 477; }
+.intro__em img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .intro__shine {
   position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0;
   background: linear-gradient(105deg, transparent 40%, rgba(255,247,222,.9) 50%, transparent 60%) 120% 0 / 260% 100% no-repeat;
-  -webkit-mask: url("/viwanda-automotive-site/images/logo/v2/workshop-emblem-mono-white.svg") center / 100% 100% no-repeat;
-  mask: url("/viwanda-automotive-site/images/logo/v2/workshop-emblem-mono-white.svg") center / 100% 100% no-repeat;
+  -webkit-mask: url("/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg") center / 100% 100% no-repeat;
+  mask: url("/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg") center / 100% 100% no-repeat;
 }
-.intro__word { width: calc(var(--em) * 2.3); max-width: calc(100vw - 48px); }
+.intro__word { width: calc(var(--em) * 2.6); max-width: calc(100vw - 48px); }
 .intro__word img, .intro__word svg { width: 100%; height: auto; display: block; overflow: visible; }
 .intro__word .vw-name { transform-box: fill-box; transform-origin: 50% 100%; }
 .intro__skip {
@@ -626,7 +632,7 @@
   margin: calc(var(--em) / -2) 0 0 calc(var(--em) / -2);
   opacity: 0;
 }
-.bay__em img { width: 100%; height: 100%; display: block; }
+.bay__em img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .bay.is-on .bay__tube { animation: tubeGrow .2s ease-out .08s both, bayFlicker .55s linear .22s both; }
 .bay.is-on .bay__beam { animation: beamOn .35s ease-out .5s both; }
 .bay.is-on .bay__em { animation: bayLit .45s ease-out .45s both; }
@@ -643,6 +649,7 @@
 @media (prefers-reduced-motion: reduce) {
   .wall-track, .road__tread i, .spot::before { animation: none !important; }
   .hero__wall { transform: rotate(-4deg) scale(1.08); }
+  @media (max-width: 760px) { .hero__wall { transform: scale(1.04); } }
   .promise__bg img { transform: none; }
   .promise--wheel .promise__row span { transform: none; }
   .engine__zoom { transform: none; }
@@ -846,10 +853,14 @@
 .lb.is-open { opacity: 1; visibility: visible; transition: opacity .3s ease; }
 .lb__fig { margin: 0; display: grid; gap: 14px; justify-items: center; max-width: min(92vw, 1200px); }
 .lb__img {
+  /* as large as the screen allows, in the photo's own proportions (--ar is
+     set from the photo itself): never a fixed box the picture is pulled into */
+  --ar: 1.3333; --room: calc(100svh - 170px);
   display: block;
-  max-width: min(92vw, 1200px); max-height: calc(100svh - 170px);
-  min-height: min(64svh, 620px);
-  width: auto; height: auto;
+  width: min(92vw, 1200px, calc(var(--room) * var(--ar)));
+  height: auto;
+  aspect-ratio: var(--ar);
+  object-fit: cover;
   border-radius: 3px;
   box-shadow: 0 30px 80px rgba(0,0,0,.6);
   transform-origin: 50% 50%;
@@ -878,7 +889,7 @@
 @media (max-width: 640px) {
   .lb__prev, .lb__next { top: auto; margin-top: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   .lb__prev { left: calc(50% - 60px); } .lb__next { right: calc(50% - 60px); }
-  .lb__img { max-height: calc(100svh - 220px); }
+  .lb__img { --room: calc(100svh - 220px); }
 }
 .lb-open { overflow: hidden; }
 
@@ -1126,7 +1137,7 @@
   background: radial-gradient(circle at 6px 5px, var(--bg) 3px, transparent 3.5px) 0 0 / 12px 10px repeat-x;
 }
 .jc__top { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: center; padding-bottom: .85rem; border-bottom: 1.5px solid var(--ink); }
-.jc__top img { width: 44px; height: 44px; display: block; }
+.jc__top img { width: 48px; height: 44px; display: block; object-fit: contain; }
 .jc__co { margin: 0; font: 500 .74rem/1.2 var(--font-display); letter-spacing: .08em; text-transform: uppercase; }
 .jc__ad { margin: .15rem 0 0; font-size: .68rem; color: var(--faint); letter-spacing: .06em; }
 .jc__no { margin: 0; text-align: right; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); line-height: 1.5; }
@@ -1285,7 +1296,8 @@
 
 .belt {
   --s: 3.6rem;                      /* the side of a square mark; every mark gets that area */
-  --gap: clamp(2.6rem, 6vw, 4.8rem);
+  --cell: 10.5rem;                  /* every mark gets the same slot, so the spacing is even
+                                       centre to centre, whatever the mark's own width */
   position: relative;
   overflow: hidden;
   /* the marks come out of white and go back into it */
@@ -1295,10 +1307,10 @@
 .belt__track { position: relative; display: flex; width: max-content; will-change: transform; }
 .belt__set {
   list-style: none; margin: 0;
-  display: flex; align-items: center; gap: var(--gap);
-  padding: var(--sp-3) var(--gap) var(--sp-3) 0;   /* trailing gap inside the set, so two sets join with no seam */
+  display: flex; align-items: center;
+  padding: var(--sp-3) 0;            /* no gap between slots: two sets join with no seam */
 }
-.belt__i { flex: none; }
+.belt__i { flex: none; width: var(--cell); display: flex; justify-content: center; }
 .belt .make__a.belt__a {
   display: grid; justify-items: center; align-content: end; gap: var(--sp-2);
   height: calc(var(--s) + 1.7rem);
@@ -1324,9 +1336,64 @@
 .belt.is-still { overflow-x: auto; -webkit-mask-image: none; mask-image: none; scrollbar-width: none; }
 .belt.is-still .belt__set[aria-hidden] { display: none; }
 @media (max-width: 760px) {
-  .belt { --s: 2.7rem; --gap: 2.2rem; }
+  .belt { --s: 2.7rem; --cell: 7.75rem; }
   .marques { padding-block: var(--sp-5) var(--sp-4); }
   .marques__head { margin-bottom: var(--sp-2); }
   .marques__note { font-size: var(--step--2); }
   .marques .makes__tm { font-size: .75rem; }
 }
+
+/* ============================================================
+   WE COME TO YOU - pick-up and drop-off, and the mobile service
+   Two cards. A lane marking runs along the top of each: the road
+   between the workshop and wherever the car is.
+   ============================================================ */
+.reach__lead {
+  margin: var(--sp-8) 0 var(--sp-4);
+  font-family: var(--font-mono); font-size: var(--step--1); font-weight: 400;
+  letter-spacing: var(--tr-label); text-transform: uppercase; color: var(--text-3);
+}
+.reach__lead b { color: var(--accent); font-weight: 500; margin-right: .6em; }
+.reach {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--sp-5);
+}
+.reach__i {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-1);
+  min-width: 0;
+}
+.reach__road {
+  position: absolute; left: 0; right: 0; top: 0; height: 6px;
+  background:
+    repeating-linear-gradient(90deg, var(--accent-fill) 0 22px, transparent 22px 40px) 0 50% / 40px 2px repeat-x,
+    var(--text);
+  animation: reachLane 1.6s linear infinite;
+}
+/* to the office and back; out to wherever the car is */
+.reach__i--pickup .reach__road { animation-direction: normal; }
+.reach__i--mobile .reach__road { animation-direction: reverse; }
+@keyframes reachLane { to { background-position: 40px 50%, 0 0; } }
+.reach__icon { color: var(--accent); }
+.reach__sw { color: var(--accent); }
+.reach__h { margin: 0; font-size: var(--step-2); font-weight: 500; letter-spacing: var(--tr-tight); text-wrap: balance; }
+.reach__short { margin: 0; font-weight: 500; color: var(--text); }
+.reach__body { margin: 0; max-width: 46ch; }
+.reach__a {
+  margin-top: auto; padding-top: var(--sp-4);
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  min-height: 44px; align-self: flex-start;
+  color: var(--text); font-weight: 500; text-decoration: none;
+}
+.reach__a .icon:last-child { color: var(--accent); transition: transform var(--dur-2) var(--ease); }
+.reach__a:hover .icon:last-child, .reach__a:focus-visible .icon:last-child { transform: translateX(4px); }
+.reach__a:hover { color: var(--accent); }
+.reach__a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .reach__road { animation: none; } }
+@media (max-width: 560px) { .reach__i { padding: var(--sp-6) var(--sp-5) var(--sp-5); } }

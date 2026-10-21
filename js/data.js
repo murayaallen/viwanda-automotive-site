@@ -27,7 +27,7 @@
       body: 'Full vehicle resprays from medium saloons to V8 SUVs, finished with glass ' +
             'coating. Panels are stripped, filled, masked and primed before colour, and ' +
             'every stage is photographed so you can see the work rather than take it on trust.',
-      images: ['respray-bay', 'saloon-masked', 'v8-glasscoat', 'cruiser-black']
+      images: ['respray-bay', 'premio-masked', 'premio-blue', 'v8-glasscoat', 'cruiser-black']
     },
     {
       id: 'bodywork', icon: 'wrench', active: true, from: null,
@@ -37,7 +37,7 @@
       body: 'Rear-end and side impact work, panel replacement and alignment, finished with ' +
             'complete paintwork. This is the work insurers send vehicles for, and it is ' +
             'quoted on assessment because no two impacts are the same.',
-      images: ['crv-damaged', 'crv-repaired', 'pajero-stripped']
+      images: ['crv-rear-damaged', 'crv-rear-repaired', 'v8-gold-damaged', 'wagon-damaged']
     },
     {
       id: 'restoration', icon: 'sparkle', active: true, from: null,
@@ -47,7 +47,7 @@
       body: 'Engine replacement, dashboard and interior repair, and full paintwork on ' +
             'vehicles worth saving. Quoted on assessment once the shell has been stripped ' +
             'and the real condition is known.',
-      images: ['fuga-stripped', 'fuga-finished']
+      images: ['fuga-stripped', 'fuga-bare', 'fuga-finished']
     },
     {
       id: 'detailing', icon: 'drop', active: true, from: null,
@@ -111,10 +111,9 @@
       short: 'In the 2023 profile. Not in the live catalogue.', body: '', images: [] },
     { id: 'consultancy', icon: 'chart', active: false, from: null,
       name: 'Fleet Consultancy', sw: 'Ushauri',
-      short: 'In the 2023 profile. Not in the live catalogue.', body: '', images: [] },
-    { id: 'pickdrop', icon: 'route', active: false, from: null,
-      name: 'Pick &amp; Drop', sw: 'Tunachukua. Tunarudisha.',
       short: 'In the 2023 profile. Not in the live catalogue.', body: '', images: [] }
+    /* Pick & Drop, held back here until October 2026, is confirmed now and
+       lives in REACH below, with the mobile service. */
   ];
 
   /* ---------------------------------------------------------
@@ -129,7 +128,7 @@
     { id: 'v8-paint', name: 'Fresh paint work, V8', price: null, service: 'respray',
       desc: 'V8 paint work with glass coating.', image: 'cruiser-gold' },
     { id: 'complete-respray', name: 'Complete vehicle respray', price: null, service: 'respray',
-      desc: 'Two-tone colours.', image: 'crv-repaired' },
+      desc: 'Two-tone colours.', image: 'crv-rear-repaired' },
     { id: 'pearl-respray', name: 'Pearl complete respray', price: null, service: 'bodywork',
       desc: 'Medium saloon with rear accident repairs and complete paint work.', image: 'premio-silver' },
     { id: 'prestine-black', name: 'Complete respray, Prestine Black', price: null, service: 'respray',
@@ -141,7 +140,7 @@
     { id: 'valeting', name: 'Valeting', price: null, service: 'detailing',
       desc: 'Complete interior clean-up and refreshing scents.', image: 'valeting' },
     { id: 'touch-up', name: 'Touch-up repairs', price: null, service: 'bodywork',
-      desc: 'Patch respray.', image: 'crv-damaged' },
+      desc: 'Patch respray.', image: 'avensis-patch' },
     { id: 'buffing', name: 'Complete buffing', price: null, service: 'detailing',
       desc: 'Buffing and polishing.', image: 'buffing' },
     { id: 'full-restoration', name: 'Full respray &amp; engine restoration', price: null, service: 'restoration',
@@ -154,80 +153,130 @@
      WORK - the gallery. Plates blurred; see docs/CATALOGUE.md.
      --------------------------------------------------------- */
   var WORK = [
-    { id: 'fuga-stripped',   w: 738, h: 554,  stage: 'Stripped',  service: 'restoration',
-      alt: 'Nissan Fuga stripped to bare metal before restoration' },
-    { id: 'fuga-finished',   w: 738, h: 985,  stage: 'Finished',  service: 'restoration',
+    { id: 'fuga-stripped', w: 738, h: 554, stage: 'Stripped', service: 'restoration',
+      alt: 'Nissan Fuga in the bay, wheels off, before its restoration' },
+    { id: 'fuga-finished', w: 738, h: 985, stage: 'Finished', service: 'restoration',
       alt: 'Nissan Fuga finished in Prestine Black' },
-    { id: 'pajero-stripped', w: 738, h: 340,  stage: 'Stripped',  service: 'bodywork',
-      alt: 'Mitsubishi Pajero Sport stripped and prepped in the bay' },
-    { id: 'pajero-finished', w: 738, h: 402,  stage: 'Finished',  service: 'detailing',
+    { id: 'fuga-bare', w: 738, h: 340, stage: 'Bare metal', service: 'restoration',
+      alt: 'Nissan Fuga taken back to bare metal, front end off, during its restoration' },
+    { id: 'pajero-finished', w: 738, h: 402, stage: 'Finished', service: 'detailing',
       alt: 'Mitsubishi Pajero Sport finished and being buffed' },
-    { id: 'crv-damaged',     w: 738, h: 826,  stage: 'Damaged',   service: 'bodywork',
+    { id: 'crv-damaged', w: 738, h: 826, stage: 'Damaged', service: 'bodywork',
       alt: 'Honda CR-V with rear accident damage before repair' },
-    { id: 'crv-repaired',    w: 738, h: 493,  stage: 'Repaired',  service: 'bodywork',
-      alt: 'Honda CR-V after panel repair and two-tone paintwork' },
-    { id: 'saloon-masked',   w: 738, h: 554,  stage: 'Masked',    service: 'respray',
+    { id: 'saloon-masked', w: 738, h: 554, stage: 'Masked', service: 'respray',
       alt: 'Saloon masked and primed, ready for colour' },
-    { id: 'respray-bay',     w: 738, h: 554,  stage: 'In the bay', service: 'respray',
+    { id: 'respray-bay', w: 738, h: 554, stage: 'In the bay', service: 'respray',
       alt: 'Vehicle masked for a complete respray in the workshop' },
-    { id: 'v8-glasscoat',    w: 738, h: 554,  stage: 'Finished',  service: 'respray',
+    { id: 'v8-glasscoat', w: 738, h: 554, stage: 'Finished', service: 'respray',
       alt: 'Toyota Land Cruiser V8 after paint work and glass coating' },
-    { id: 'cruiser-gold',    w: 738, h: 554,  stage: 'Finished',  service: 'respray',
+    { id: 'cruiser-gold', w: 738, h: 554, stage: 'Finished', service: 'respray',
       alt: 'Toyota Land Cruiser V8 finished, front view' },
-    { id: 'cruiser-black',   w: 738, h: 554,  stage: 'Finished',  service: 'respray',
+    { id: 'cruiser-black', w: 738, h: 554, stage: 'Finished', service: 'respray',
       alt: 'Black Toyota Land Cruiser V8 after a complete respray' },
-    { id: 'valeting',        w: 738, h: 554,  stage: 'Valeted',   service: 'detailing',
+    { id: 'valeting', w: 738, h: 554, stage: 'Valeted', service: 'detailing',
       alt: 'Interior after a complete clean-up' },
-    { id: 'buffing',         w: 738, h: 554,  stage: 'Buffed',    service: 'detailing',
+    { id: 'buffing', w: 738, h: 554, stage: 'Buffed', service: 'detailing',
       alt: 'Gloss finish after complete buffing and polishing' },
-    { id: 'tint',            w: 738, h: 1033, stage: 'Tinted',    service: 'detailing',
+    { id: 'tint', w: 738, h: 1033, stage: 'Tinted', service: 'detailing',
       alt: 'All-around window tint fitted' },
-    { id: 'parts-boxed',     w: 738, h: 1196, stage: 'Landed',    service: 'parts',
+    { id: 'parts-boxed', w: 738, h: 1196, stage: 'Landed', service: 'parts',
       alt: 'Imported parts boxed and labelled for a customer' },
-    { id: 'parts-airbag',    w: 738, h: 1351, stage: 'Sourced',   service: 'parts',
+    { id: 'parts-airbag', w: 738, h: 1351, stage: 'Sourced', service: 'parts',
       alt: 'Replacement airbag module sourced for a repair' },
-    { id: 'dashboard',       w: 738, h: 555,  stage: 'Rebuilt',   service: 'parts',
+    { id: 'dashboard', w: 738, h: 555, stage: 'Rebuilt', service: 'parts',
       alt: 'Dashboard repair and interior trim work' },
-    { id: 'premio-silver',   w: 738, h: 412,  stage: 'Finished',  service: 'bodywork',
-      alt: 'Toyota saloon after a complete respray' }
+    { id: 'premio-silver', w: 738, h: 412, stage: 'Finished', service: 'bodywork',
+      alt: 'Toyota saloon after a complete respray' },
+    { id: 'crv-rear-damaged', w: 738, h: 554, stage: 'Damaged', service: 'bodywork',
+      alt: 'Honda CR-V from behind, rear quarter and tailgate crushed' },
+    { id: 'crv-rear-repaired', w: 738, h: 554, stage: 'Repaired', service: 'bodywork',
+      alt: 'The same Honda CR-V from behind, rear quarter and tailgate repaired and refinished' },
+    { id: 'v8-gold-damaged', w: 738, h: 554, stage: 'Damaged', service: 'bodywork',
+      alt: 'Toyota Land Cruiser V8 with the front end smashed, bumper and lights off' },
+    { id: 'cruiser-black-stripped', w: 738, h: 554, stage: 'Stripped', service: 'respray',
+      alt: 'Black Toyota Land Cruiser V8 with the front stripped for respray' },
+    { id: 'cruiser-black-front', w: 738, h: 554, stage: 'Finished', service: 'respray',
+      alt: 'The same black Land Cruiser V8 finished and glass-coated' },
+    { id: 'wagon-damaged', w: 738, h: 554, stage: 'Damaged', service: 'bodywork',
+      alt: 'White Toyota estate with rear accident damage in the bay' },
+    { id: 'wagon-finished', w: 738, h: 554, stage: 'Repaired', service: 'bodywork',
+      alt: 'The same white Toyota estate after rear accident repair and complete paint' },
+    { id: 'premio-masked', w: 738, h: 554, stage: 'Masked', service: 'respray',
+      alt: 'Toyota Premio masked and in primer for a complete respray' },
+    { id: 'premio-blue', w: 738, h: 554, stage: 'Finished', service: 'respray',
+      alt: 'The same Toyota Premio finished in blue' },
+    { id: 'avensis-patch', w: 738, h: 554, stage: 'Patched', service: 'bodywork',
+      alt: 'Silver Toyota Avensis with the front wing and bumper patched and primed' },
+    { id: 'avensis-finished', w: 738, h: 554, stage: 'Finished', service: 'bodywork',
+      alt: 'The same Toyota Avensis after the patch respray' }
   ];
 
 
   /* ---------------------------------------------------------
      PROJECTS - one job, shown before and after.
 
-     `confirmed` says whether the two frames are verifiably the same
-     vehicle. In the source gallery the Fuga shell and the finished
-     black car came from different caption groups, so that pair is an
-     inference, not a fact. The page renders unconfirmed pairs as two
-     stages of the same kind of work rather than claiming one car -
-     flip the flag once the client confirms and the wording changes
-     itself. Do not flip it on a hunch.
+     Every pair is two photographs of the same vehicle on the same job:
+     both frames come from the same item in the client's own WhatsApp
+     catalogue, and they are matched by angle so the wipe compares like
+     with like. Checked photo by photo in October 2026, after the client
+     flagged pairs that were two different cars.
+
+     `confirmed: false` would render a pair as "two stages of one job"
+     rather than one car. Nothing here needs it; keep it for any pair
+     that cannot be traced to one catalogue item.
+
+     The Fuga restoration and the Pajero buff are not here: neither job
+     has a before and an after of the same car from a matching angle.
+     Their photographs stay in the gallery.
      --------------------------------------------------------- */
   var PROJECTS = [
     {
-      id: 'crv', vehicle: 'Honda CR-V', service: 'bodywork', confirmed: true,
-      title: 'Rear impact, panel and paint',
-      body: 'Rear quarter and tailgate took the hit. Panels straightened and replaced, ' +
-            'then refinished in the original two-tone so the repair does not announce itself.',
-      before: 'crv-damaged', after: 'crv-repaired',
+      id: 'land-cruiser-gold', vehicle: 'Toyota Land Cruiser V8', service: 'bodywork', confirmed: true,
+      title: 'Front end rebuilt, painted and glass-coated',
+      body: 'It came in with the front end gone: bumper, lights and grille off, the wing pushed in. ' +
+            'Rebuilt, refinished in its own colour and glass-coated, so nothing says it was ever hit.',
+      before: 'v8-gold-damaged', after: 'cruiser-gold',
       beforeLabel: 'As it arrived', afterLabel: 'As it left'
     },
     {
-      id: 'pajero', vehicle: 'Mitsubishi Pajero Sport', service: 'bodywork', confirmed: true,
-      title: 'Strip, respray and buff',
-      body: 'Taken back, prepped and resprayed, then buffed and polished. The gloss is the ' +
-            'last stage, and it is the one people actually notice.',
-      before: 'pajero-stripped', after: 'pajero-finished',
-      beforeLabel: 'Stripped and prepped', afterLabel: 'Finished and buffed'
+      id: 'crv', vehicle: 'Honda CR-V', service: 'bodywork', confirmed: true,
+      title: 'Rear impact, panel and paint',
+      body: 'Rear quarter and tailgate took the hit. Panels straightened and replaced, then ' +
+            'refinished to match so the repair does not announce itself.',
+      before: 'crv-rear-damaged', after: 'crv-rear-repaired',
+      beforeLabel: 'As it arrived', afterLabel: 'Repaired and refinished'
     },
     {
-      id: 'fuga', vehicle: 'Nissan Fuga', service: 'restoration', confirmed: false,
-      title: 'Full restoration',
-      body: 'Engine replacement, dashboard repairs and complete paint work. A shell this far ' +
-            'gone is not a write-off, it is a longer job.',
-      before: 'fuga-stripped', after: 'fuga-finished',
-      beforeLabel: 'Stripped to bare metal', afterLabel: 'Finished in Prestine Black'
+      id: 'land-cruiser-black', vehicle: 'Toyota Land Cruiser V8', service: 'respray', confirmed: true,
+      title: 'Complete respray and glass coating',
+      body: 'Front stripped back, the whole body resprayed and finished with glass coating. ' +
+            'The big SUVs take the longest to prepare, and it shows in the gloss.',
+      before: 'cruiser-black-stripped', after: 'cruiser-black-front',
+      beforeLabel: 'Stripped for respray', afterLabel: 'Resprayed and coated'
+    },
+    {
+      id: 'toyota-estate', vehicle: 'Toyota estate', service: 'bodywork', confirmed: true,
+      title: 'Rear accident repair and complete paint',
+      body: 'Rear bumper and tailgate crushed. The rear end was rebuilt, then the whole car painted ' +
+            'so the new panels and the old ones finish as one colour.',
+      before: 'wagon-damaged', after: 'wagon-finished',
+      beforeLabel: 'As it arrived', afterLabel: 'As it left'
+    },
+    {
+      id: 'premio', vehicle: 'Toyota Premio', service: 'respray', confirmed: true,
+      title: 'Complete respray, medium saloon',
+      body: 'Masked by hand and primed all over, then laid in colour. Most of a good respray is ' +
+            'the preparation in the first frame, which nobody sees in the second.',
+      before: 'premio-masked', after: 'premio-blue',
+      beforeLabel: 'Masked and primed', afterLabel: 'Finished in blue'
+    },
+    {
+      id: 'avensis', vehicle: 'Toyota Avensis', service: 'bodywork', confirmed: true,
+      title: 'Patch respray',
+      body: 'Not every job is a whole car. The front wing and bumper were patched, primed and ' +
+            'blended into the paint around them.',
+      before: 'avensis-patch', after: 'avensis-finished',
+      beforeLabel: 'Patched and primed', afterLabel: 'Blended in'
     }
   ];
 
@@ -299,6 +348,25 @@
       note: 'Our Embu site. Call ahead and we will tell you what can be done there.' }
   ];
 
+  /* ---------------------------------------------------------
+     REACH - how the car gets to the work, or the work to the car.
+     Confirmed by the client in October 2026: pick-up and drop-off for
+     office and corporate clients, and a mobile, door-to-door service
+     wherever the client is.
+     --------------------------------------------------------- */
+  var REACH = [
+    { id: 'pickup', icon: 'route', sw: 'Tunachukua. Tunarudisha.',
+      name: 'Pick-up &amp; drop-off',
+      short: 'For office and corporate clients.',
+      body: 'We collect the vehicle from your office and bring it back when the work is done, ' +
+            'so nobody loses a working day sitting in a workshop.' },
+    { id: 'mobile', icon: 'pin', sw: 'Tunakuja kwako',
+      name: 'Mobile service, door to door',
+      short: 'Wherever you are.',
+      body: 'Tell us where the car is, at home, at work or wherever it stopped, and we come to it. ' +
+            'What can be done on the spot is done there; what needs the bay, we take in.' }
+  ];
+
   var CLIENTS = [
     { id: 'resolution-insurance',    name: 'Resolution Insurance' },
     { id: 'kenya-credit-traders',    name: 'Kenya Credit Traders' },
@@ -351,6 +419,7 @@
     catalogue: CATALOGUE,
     work: WORK,
     projects: PROJECTS,
+    reach: REACH,
     process: PROCESS,
     stages: STAGES,
     locations: LOCATIONS,

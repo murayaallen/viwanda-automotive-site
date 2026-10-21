@@ -34,6 +34,16 @@
     return a;
   })();
 
+  /* Where the work happens: the bay, a collection from the office, or the
+     mobile service at the car. Pick-up and the mobile service were
+     confirmed by the client in October 2026. */
+  var WHERE = [
+    { v: 'bay',    t: 'We bring it in',             card: 'Brought to the bay' },
+    { v: 'pickup', t: 'Collect it from our office', card: 'Pick-up and drop-off' },
+    { v: 'mobile', t: 'Come to the car',            card: 'Mobile service' }
+  ];
+  function whereOf(v) { for (var i = 0; i < WHERE.length; i++) if (WHERE[i].v === v) return WHERE[i]; return WHERE[0]; }
+
   var STEPS = [
     { id: 'job',     label: 'The job' },
     { id: 'vehicle', label: 'The vehicle' },
@@ -106,6 +116,17 @@
           'value="' + VI.esc(S.phone || '') + '" autocomplete="tel">' +
           '<p class="field__err" data-err="phone" hidden>A Kenyan mobile number, please.</p></div>' +
       '</div>' +
+      '<fieldset class="qf__where"><legend class="qf__wl">Where is the car?</legend>' +
+        '<div class="qf__wopts">' + WHERE.map(function (o) {
+          var on = (S.where || 'bay') === o.v;
+          return '<label class="qwhere' + (on ? ' is-on' : '') + '"><input type="radio" name="where" value="' + o.v + '"' +
+            (on ? ' checked' : '') + '><span>' + VI.esc(o.t) + '</span></label>';
+        }).join('') + '</div>' +
+        '<div class="field qf__place"' + ((S.where || 'bay') === 'bay' ? ' hidden' : '') + '>' +
+          '<label for="q-place">Where should we come?</label>' +
+          '<input id="q-place" name="place" value="' + VI.esc(S.place || '') + '" placeholder="Office, estate or landmark" autocomplete="street-address">' +
+          '<p class="field__err" data-err="place" hidden>Tell us where the car is.</p></div>' +
+      '</fieldset>' +
       '<div class="field"><label for="q-when">When suits you? <span class="text-3">(optional)</span></label>' +
         '<input id="q-when" name="when" type="date" value="' + VI.esc(S.when || '') + '"></div>' +
       '<div class="qf__summary" data-summary></div></fieldset>';
@@ -128,8 +149,12 @@
       '<div><dt>Job</dt><dd>' + (svc ? svc.name : '—') + '</dd></div>' +
       '<div><dt>Vehicle</dt><dd>' + VI.esc([S.make, S.model, S.year].filter(Boolean).join(' ') || '—') + '</dd></div>' +
       '<div><dt>Detail</dt><dd>' + VI.esc(S.notes || '—') + '</dd></div>' +
+      '<div><dt>Where</dt><dd>' + VI.esc(whereOf(S.where).card + (S.where && S.where !== 'bay' && S.place ? ', ' + S.place : '')) + '</dd></div>' +
       '</dl>';
   }
+
+  /* a collection or a visit needs somewhere to go */
+  function placeOk() { return !S.where || S.where === 'bay' || (S.place || '').trim().length >= 3; }
 
   function phoneOk() {
     var ph = (S.phone || '').replace(/[^\d+]/g, '');
@@ -141,7 +166,7 @@
      entries change, so each one inks in as it is answered. */
   var CARD = [
     ['job', 'Job'], ['vehicle', 'Vehicle'], ['yc', 'Year / colour'], ['detail', 'Detail'],
-    ['name', 'Customer'], ['phone', 'Phone'], ['when', 'Preferred date']
+    ['where', 'Where'], ['name', 'Customer'], ['phone', 'Phone'], ['when', 'Preferred date']
   ];
   function card(sent) {
     var el = d.querySelector('[data-jobcard-live]');
@@ -149,7 +174,7 @@
     if (!el.firstChild) {
       el.innerHTML =
         '<header class="jc__top">' +
-          '<img src="/viwanda-automotive-site/images/logo/v2/workshop-emblem-light-web.svg" alt="" width="44" height="44">' +
+          '<img src="/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg" alt="" width="48" height="44">' +
           '<div><p class="jc__co">Viwanda Automotive Limited</p><p class="jc__ad">Garden Estate &middot; Nairobi</p></div>' +
           '<p class="jc__no">Job card<br><span>Draft</span></p>' +
         '</header>' +
@@ -165,6 +190,7 @@
       vehicle: [S.make, S.model].filter(Boolean).join(' '),
       yc: [S.year, S.colour].filter(Boolean).join(' · '),
       detail: S.notes || '',
+      where: S.where && S.where !== 'bay' ? whereOf(S.where).card + (S.place ? ' · ' + S.place : '') : '',
       name: S.name || '',
       phone: S.phone || '',
       when: S.when || ''
@@ -179,7 +205,7 @@
       }
     });
     var ready = !!(S.service && S.make && (S.model || '').trim() && (S.notes || '').trim().length >= 6 &&
-      (S.name || '').trim() && phoneOk());
+      (S.name || '').trim() && phoneOk() && placeOk());
     var st = el.querySelector('[data-stamp]');
     if (sent) st.textContent = 'Opened in WhatsApp';
     st.classList.toggle('is-on', ready || !!sent);
@@ -188,7 +214,7 @@
 
   function read() {
     var f = d.querySelector('[data-quote]');
-    ['service', 'make', 'model', 'year', 'colour', 'notes', 'name', 'phone', 'when'].forEach(function (k) {
+    ['service', 'make', 'model', 'year', 'colour', 'notes', 'where', 'place', 'name', 'phone', 'when'].forEach(function (k) {
       var el = f.elements[k];
       if (!el) return;
       if (el.type === 'radio' || (el.length && el[0] && el[0].type === 'radio')) {
@@ -216,6 +242,7 @@
     if (s === 'you') {
       ok = err('name', !(S.name || '').trim());
       if (!err('phone', !phoneOk())) ok = false;
+      if (!err('place', !placeOk())) ok = false;
     }
     if (!ok) {
       var e = d.querySelector('.field__err:not([hidden])');
@@ -230,6 +257,7 @@
       'Job: ' + (svc ? svc.name.replace(/&amp;/g, 'and') : '-') + '\n' +
       'Vehicle: ' + [S.make, S.model, S.year, S.colour].filter(Boolean).join(' ') + '\n' +
       'Detail: ' + (S.notes || '') + '\n' +
+      (S.where && S.where !== 'bay' ? whereOf(S.where).card + ': ' + (S.place || '') + '\n' : '') +
       (S.when ? 'Preferred date: ' + S.when + '\n' : '') +
       '\nName: ' + (S.name || '') + '\nPhone: ' + (S.phone || '') +
       '\n\n(Sent from viwandaautomotive.com)';
@@ -262,6 +290,14 @@
         for (var i = 0; i < opts.length; i++) opts[i].classList.remove('is-on');
         if (e.target.closest) e.target.closest('.qopt').classList.add('is-on');
         err('service', false);
+      }
+      if (e.target.name === 'where') {
+        var ws = f.querySelectorAll('.qwhere');
+        for (var j = 0; j < ws.length; j++) ws[j].classList.toggle('is-on', ws[j].contains(e.target));
+        var pl = f.querySelector('.qf__place');
+        if (pl) pl.hidden = e.target.value === 'bay';
+        if (e.target.value === 'bay') err('place', false);
+        summary();
       }
     });
     f.addEventListener('input', function () { read(); card(); });

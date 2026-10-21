@@ -128,8 +128,9 @@ html.is-locked, html.is-locked body { overflow: hidden; }
   margin-left: auto;
 }
 .brand { display: inline-flex; align-items: center; flex: none; }
-.brand__mark { height: 2.25rem; width: auto; }
-@media (max-width: 560px) { .brand__mark { height: 1.95rem; } }
+/* the final logo carries a strapline: tall enough that it stays legible */
+.brand__mark { height: 3.25rem; width: auto; }
+@media (max-width: 560px) { .brand__mark { height: 2.45rem; } }
 
 .site-nav ul {
   display: flex;
@@ -246,7 +247,7 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 }
 @media (max-width: 900px) { .foot__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .foot__grid { grid-template-columns: 1fr; } }
-.foot__brand img { width: 11rem; height: auto; }
+.foot__brand img { width: 14rem; max-width: 100%; height: auto; }
 .foot__tag { font-size: var(--step-1); margin-top: var(--sp-4); }
 .foot__gloss { font-size: var(--step--1); margin-top: var(--sp-1); max-width: 34ch; }
 .foot__h {

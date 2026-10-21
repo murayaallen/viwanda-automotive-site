@@ -145,8 +145,8 @@
       '<div class="scroll-progress" aria-hidden="true"><i></i></div>' +
       '<div class="wrap site-header__in">' +
         '<a class="brand" href="/viwanda-automotive-site/" aria-label="' + esc(C.legal) + ' - home">' +
-          '<img src="/viwanda-automotive-site/images/logo/v2/workshop-lockup-light-web.svg" alt="" width="158" height="40" class="brand__mark brand__mark--light">' +
-          '<img src="/viwanda-automotive-site/images/logo/v2/workshop-lockup-dark-web.svg" alt="" width="158" height="40" class="brand__mark brand__mark--dark">' +
+          '<img src="/viwanda-automotive-site/images/logo/final/viwanda-logo.svg" alt="" width="191" height="60" loading="lazy" decoding="async" class="brand__mark brand__mark--light">' +
+          '<img src="/viwanda-automotive-site/images/logo/final/viwanda-logo-dark.svg" alt="" width="191" height="60" loading="lazy" decoding="async" class="brand__mark brand__mark--dark">' +
           '<span class="sr-only">' + esc(C.legal) + '</span>' +
         '</a>' +
         '<nav class="site-nav" aria-label="Primary"><ul>' + nav + '</ul></nav>' +
@@ -175,7 +175,7 @@
       '<div class="drawer__scrim" data-drawer-close></div>' +
       '<div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">' +
         '<div class="drawer__top">' +
-          '<img src="/viwanda-automotive-site/images/logo/v2/workshop-emblem-small.svg" alt="" width="36" height="36" loading="lazy">' +
+          '<img src="/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg" alt="" width="40" height="36" loading="lazy">' +
           '<button class="icon-btn" type="button" data-drawer-close aria-label="Close menu">' +
             '<span data-icon="close" data-icon-size="22"></span>' +
           '</button>' +
@@ -221,9 +221,9 @@
       '<div class="wrap">' +
         '<div class="foot__grid">' +
           '<div class="foot__brand">' +
-            '<img class="foot__logo foot__logo--light" src="/viwanda-automotive-site/images/logo/v2/workshop-stacked-light.svg" alt="' +
+            '<img class="foot__logo foot__logo--light" src="/viwanda-automotive-site/images/logo/final/viwanda-logo.svg" alt="' +
               esc(C.legal) + '" width="200" height="148" loading="lazy">' +
-            '<img class="foot__logo foot__logo--dark" src="/viwanda-automotive-site/images/logo/v2/workshop-stacked-dark.svg" alt="" width="200" height="148" loading="lazy">' +
+            '<img class="foot__logo foot__logo--dark" src="/viwanda-automotive-site/images/logo/final/viwanda-logo-dark.svg" alt="" width="200" height="148" loading="lazy">' +
             '<p class="sw foot__tag">' + esc(C.tagline) + '</p>' +
             '<p class="text-3 foot__gloss">' + esc(C.taglineEn) +
               ' &middot; and done properly. Both meanings at once.</p>' +
@@ -232,6 +232,7 @@
             svc + '</ul></div>' +
           '<div class="foot__col"><h3 class="foot__h">Company</h3><ul class="foot__list">' +
             '<li><a href="/viwanda-automotive-site/fleet.html">Fleet &amp; corporate</a></li>' +
+            '<li><a href="/viwanda-automotive-site/services.html#reach">Pick-up &amp; mobile service</a></li>' +
             '<li><a href="/viwanda-automotive-site/about.html">About</a></li>' +
             '<li><a href="/viwanda-automotive-site/locations.html">Locations</a></li>' +
             '<li><a href="/viwanda-automotive-site/contact.html">Contact</a></li>' +
@@ -257,7 +258,7 @@
           '<p class="label foot__karibu">Karibu Viwanda</p>' +
         '</div>' +
       '</div>' +
-      '<div class="foot__giant" aria-hidden="true"><img src="/viwanda-automotive-site/images/logo/v2/workshop-wordmark-mono-white.svg" ' +
+      '<div class="foot__giant" aria-hidden="true"><img src="/viwanda-automotive-site/images/logo/final/viwanda-name-mono-white.svg" ' +
         'alt="" width="300" height="62" loading="lazy" decoding="async"></div>' +
     '</footer>';
   }
@@ -270,6 +271,30 @@
         '<span data-icon="whatsapp" data-icon-size="19"></span>Send a photo</a>' +
       '<a class="btn btn--ghost btn--lg" href="tel:' + esc(C.phone) + '">' +
         esc(C.phoneDisplay) + '</a>';
+  }
+
+  /* How the car gets to the work, or the work to the car: pick-up and
+     drop-off for office clients, and the mobile service. Confirmed by the
+     client, October 2026. Each card opens WhatsApp with the ask written. */
+  function reachHtml() {
+    var ask = {
+      pickup: 'Habari Viwanda. We would like a vehicle collected from our office. Location: ',
+      mobile: 'Habari Viwanda. Could you come to the car? It is at: '
+    };
+    var cta = { pickup: 'Book a collection', mobile: 'Ask us to come to you' };
+    return (V.reach || []).map(function (r) {
+      return '<article class="reach__i reach__i--' + esc(r.id) + '" data-anim="up">' +
+        '<span class="reach__road" aria-hidden="true"></span>' +
+        '<span class="reach__icon" data-icon="' + esc(r.icon) + '" data-icon-size="26"></span>' +
+        '<p class="reach__sw label">' + esc(r.sw) + '</p>' +
+        '<h3 class="reach__h">' + r.name + '</h3>' +
+        '<p class="reach__short">' + esc(r.short) + '</p>' +
+        '<p class="reach__body text-2">' + esc(r.body) + '</p>' +
+        '<a class="reach__a" target="_blank" rel="noopener" href="' + esc(V.wa(ask[r.id] || '')) + '">' +
+          '<span data-icon="whatsapp" data-icon-size="18"></span>' + (cta[r.id] || 'Ask on WhatsApp') +
+          '<span data-icon="arrow" data-icon-size="16"></span></a>' +
+      '</article>';
+    }).join('');
   }
 
   /* Kenya is mobile-first and this is reported to lift mobile conversion
@@ -372,6 +397,11 @@
     if (m) m.innerHTML = mobileBarHtml();
     var ctas = d.querySelectorAll('[data-cta]');
     for (var i = 0; i < ctas.length; i++) ctas[i].innerHTML = ctaHtml();
+    var reach = d.querySelectorAll('[data-reach]');
+    for (var j = 0; j < reach.length; j++) {
+      reach[j].classList.add('reach', 'reveal-parent');
+      reach[j].innerHTML = reachHtml();
+    }
 
     if (VI.hydrateIcons) VI.hydrateIcons(d);
     bind();

@@ -87,8 +87,8 @@
     if (!el) return;
     /* a spread across services rather than the prettiest twelve */
     var want = ['fuga-finished', 'crv-damaged', 'respray-bay', 'cruiser-gold',
-                'pajero-stripped', 'valeting', 'saloon-masked', 'parts-boxed',
-                'cruiser-black', 'crv-repaired', 'tint', 'fuga-stripped'];
+                'v8-gold-damaged', 'valeting', 'premio-masked', 'parts-boxed',
+                'cruiser-black', 'crv-rear-repaired', 'tint', 'fuga-stripped'];
     var items = want.map(function (id) {
       return V.work.filter(function (k) { return k.id === id; })[0];
     }).filter(Boolean);

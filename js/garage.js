@@ -28,8 +28,8 @@
 
   var WALL = [
     ['respray-bay', 'cruiser-black', 'saloon-masked', 'v8-glasscoat', 'pajero-finished', 'buffing'],
-    ['fuga-finished', 'premio-silver', 'fuga-stripped', 'crv-repaired', 'valeting', 'cruiser-gold'],
-    ['tint', 'pajero-stripped', 'dashboard', 'crv-damaged', 'parts-airbag', 'parts-boxed']
+    ['fuga-finished', 'premio-blue', 'fuga-stripped', 'crv-rear-repaired', 'valeting', 'cruiser-gold'],
+    ['tint', 'v8-gold-damaged', 'dashboard', 'crv-damaged', 'wagon-finished', 'parts-boxed']
   ];
 
   function el(tag, cls) { var e = d.createElement(tag); if (cls) e.className = cls; return e; }
@@ -86,7 +86,7 @@
     var mark = el('div', 'intro__mark');
     var em = el('div', 'intro__em');
     var img = new Image();
-    img.alt = ''; img.src = '/viwanda-automotive-site/images/logo/v2/workshop-emblem-web.svg';
+    img.alt = ''; img.src = '/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg';
     em.appendChild(img);
     em.appendChild(el('i', 'intro__shine'));
     var word = el('div', 'intro__word');
@@ -99,11 +99,11 @@
     /* the name is inlined so its two lines can arrive one after the other */
     function plainWord() {
       if (word.firstChild) return;
-      var wi = new Image(); wi.alt = ''; wi.src = '/viwanda-automotive-site/images/logo/v2/workshop-wordmark-dark.svg';
+      var wi = new Image(); wi.alt = ''; wi.src = '/viwanda-automotive-site/images/logo/final/viwanda-wordmark-dark.svg';
       word.appendChild(wi);
     }
     if (w.fetch) {
-      w.fetch('/viwanda-automotive-site/images/logo/v2/workshop-wordmark-dark.svg').then(function (r) { return r.ok ? r.text() : ''; })
+      w.fetch('/viwanda-automotive-site/images/logo/final/viwanda-wordmark-dark.svg').then(function (r) { return r.ok ? r.text() : ''; })
         .then(function (t) { if (t && !word.firstChild) word.innerHTML = t.replace(/<title>.*?<\/title>/, ''); else plainWord(); })
         .catch(plainWord);
     } else plainWord();
@@ -142,7 +142,7 @@
     box.appendChild(el('div', 'bay__beam'));
     box.appendChild(el('div', 'bay__tube'));
     var em = el('div', 'bay__em');
-    var img = new Image(); img.alt = ''; img.src = '/viwanda-automotive-site/images/logo/v2/workshop-emblem-web.svg';
+    var img = new Image(); img.alt = ''; img.src = '/viwanda-automotive-site/images/logo/final/viwanda-emblem.svg';
     em.appendChild(img); box.appendChild(em);
     d.body.appendChild(box);
 
@@ -280,7 +280,8 @@
         bd.className += ' road__tread'; bd.appendChild(el('i'));
       } else if (k === 'ba') {
         var ba = el('div', 'bd-ba');
-        ['crv-damaged', 'crv-repaired'].forEach(function (n) {
+        /* one real job, the same car both sides of the wipe */
+        ['v8-gold-damaged', 'cruiser-gold'].forEach(function (n) {
           var bi = new Image(); bi.alt = ''; bi.decoding = 'async'; bi.src = '/viwanda-automotive-site/images/work/' + n + '.webp'; ba.appendChild(bi);
         });
         ba.appendChild(el('i')); bd.appendChild(ba);
@@ -317,6 +318,11 @@
      ============================================================ */
   function lightbox() {
     var box = null, img, stageEl, altEl, numEl, items = [], idx = 0, opener = null, downX = null;
+    /* the photo's own proportions, so the viewer can make it as large as the
+       screen allows without stretching it into a box of another shape */
+    function shape(im) {
+      if (im && im.naturalWidth && im.naturalHeight) img.style.setProperty('--ar', (im.naturalWidth / im.naturalHeight).toFixed(4));
+    }
     function srcOf(fig) {
       var im = fig.querySelector('img'), so = fig.querySelector('source');
       return (im && im.currentSrc) || (so && so.srcset.split(/[ ,]/)[0]) || (im && im.src);
@@ -377,7 +383,7 @@
           img.style.opacity = '0';
           var n = new Image();
           n.onload = n.onerror = function () {
-            img.src = n.src; img.alt = k.alt;
+            shape(n); img.src = n.src; img.alt = k.alt;
             stageEl.textContent = k.stage; altEl.textContent = k.alt;
             img.style.opacity = '1';
             journey(n.src);
@@ -400,7 +406,7 @@
       img.style.transition = 'opacity .2s ease';
       img.style.opacity = '0';
       var n = new Image();
-      n.onload = n.onerror = function () { img.src = n.src; caption(f); img.style.opacity = '1'; };
+      n.onload = n.onerror = function () { shape(n); img.src = n.src; caption(f); img.style.opacity = '1'; };
       n.src = srcOf(f);
     }
     function fromThumb(fig) {
@@ -423,11 +429,12 @@
       idx = Math.max(0, items.indexOf(fig));
       opener = fig;
       img.style.opacity = '1';
+      shape(fig.querySelector('img'));
       img.src = srcOf(items[idx]);
       caption(items[idx]);
       box.classList.add('is-open');
       d.documentElement.classList.add('lb-open');
-      if (img.complete) fromThumb(fig); else img.onload = function () { img.onload = null; fromThumb(fig); };
+      if (img.complete) fromThumb(fig); else img.onload = function () { img.onload = null; shape(img); fromThumb(fig); };
       box.querySelector('.lb__x').focus({ preventScroll: true });
     }
     function close() {
